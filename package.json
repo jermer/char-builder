@@ -14,7 +14,8 @@
     "bootstrap": "^5.2.3",
     "dragula": "^3.7.3",
     "vue": "^3.2.47",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "vue3-popper": "^1.5.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",

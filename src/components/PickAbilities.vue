@@ -128,6 +128,7 @@ export default {
 #tile-container {
     background-color: aliceblue;
     display: table-row;
+    justify-content: center;
 }
 
 .score-drop {
