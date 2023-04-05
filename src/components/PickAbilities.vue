@@ -33,7 +33,8 @@ export default {
     data() {
         return {
             character,
-            scoreLabels: ['str', 'dex', 'con', 'int', 'wis', 'cha'],
+            // scoreLabels: ['str', 'dex', 'con', 'int', 'wis', 'cha'],
+            scoreLabels: character.abilityLabels,
             update: 0,
         }
     },

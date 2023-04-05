@@ -14,20 +14,20 @@ export default {
                 { name: "warrior", desc: "front-line fighter who can inspire their allies" },
                 { name: "wizard", desc: "magic-user with a broad variety of arcane skills" }
             ],
-            selectedClass: ''
-        }
-    },
-    computed: {
-        selectedDesc() {
-            const cls = this.charClasses.find(c => c.name === this.selectedClass);
-            if (cls)
-                return cls.desc;
-            return '(select a character class)';
+            // selectedClass: ''
         }
     },
     methods: {
-        handleChange() {
-            this.character.updateCharClass(this.selectedClass);
+        handleClick(evt) {
+            // mark as inactive all buttons other than this one
+            const activeButtons = document.querySelectorAll(`button.class-btn.active`);
+            activeButtons.forEach(b => {
+                if (b.id !== evt.target.id)
+                    b.classList.remove('active');
+            });
+            // update the character in state
+            const newClass = evt.target.classList.contains('active') ? evt.target.innerText : '';
+            this.character.updateCharClass(newClass);
         }
     }
 }
@@ -36,28 +36,12 @@ export default {
 <template>
     <p>Your character's role on the team is called their <i>character class.</i> Choose one of the following:</p>
 
-    <div class="row row-cols-1 row-cols-md-2 g-4">
-        <div class="col">
-            <div class="card">
-                <div class="card-body">
-                    <div class="form-check" v-for="cls in charClasses" @change="handleChange">
-                        <input type="radio" class="form-check-input" :id="cls.name" :value="cls.name"
-                            v-model="selectedClass" />
-                        <label class="form-check-label">{{ cls.name[0].toLocaleUpperCase() + cls.name.slice(1) }}</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <div v-if="selectedClass" class="card-body">
-                    <h5 class="card-title">{{ selectedClass.toLocaleUpperCase() }}</h5>
-                    <p class="card-text">{{ selectedDesc }}</p>
-                </div>
-                <div v-else class="card-body">
-                    <i class="text-muted">select a class</i>
-                </div>
-            </div>
-        </div>
+    <div>
+        <span v-for="(cls, idx) in charClasses" data-bs-toggle="tooltip" :title="cls.desc">
+            <button type="button" class="btn btn-outline-primary m-1 class-btn" :id="`class-btn-${cls.name}`"
+                data-bs-toggle="button" @click="handleClick">
+                {{ cls.name }}
+            </button>
+        </span>
     </div>
 </template>

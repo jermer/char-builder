@@ -10,12 +10,14 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/vue-fontawesome": "^3.0.3",
     "@popperjs/core": "^2.11.7",
     "bootstrap": "^5.2.3",
     "dragula": "^3.7.3",
     "vue": "^3.2.47",
-    "vue-router": "^4.1.6",
-    "vue3-popper": "^1.5.0"
+    "vue-router": "^4.1.6"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",
@@ -24,6 +26,7 @@
     "eslint": "^8.34.0",
     "eslint-plugin-vue": "^9.9.0",
     "prettier": "^2.8.4",
+    "sass": "^1.60.0",
     "vite": "^4.1.4"
   }
 }

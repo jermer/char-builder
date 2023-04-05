@@ -11,18 +11,22 @@ export default {
     },
     computed: {
         isDisabled() {
-            if (this.character.charClass === '')
-                return true;
-
-            const abilityTotal = this.character.abilityScores.reduce((acc, cur) => acc + cur, 0)
-            if (abilityTotal !== 75)
-                return true;
-
-            return false;
+            return (
+                this.character.classError
+                || this.character.abilityError
+                || this.character.skillError
+                || this.character.gearError
+                || this.character.identityError
+            )
         }
     },
     methods: {
         async getCharSheet() {
+            if (this.isDisabled) {
+                character.setErrorFlag(true);
+                return;
+            }
+
             console.log("getCharSheet!", this.character.charClass, this.character.abilityScores, this.character.abilityModifiers)
 
             const formUrl = '/charBookletInterior.pdf'
@@ -50,7 +54,21 @@ export default {
 </script>
 
 <template>
-    <button class="btn btn-dark mt-3" @click="getCharSheet" :disabled="isDisabled">
+    <button id="pdf-btn" :class="`btn btn-dark mt-3 ${isDisabled ? '' : 'ready'}`" @click="getCharSheet">
         Download Character Sheet
     </button>
 </template>
+
+<style>
+#pdf-btn.ready {
+    color: white;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+#pdf-btn:not(.ready) {
+    color: white;
+    background-color: lightgray;
+    border-color: lightgray;
+}
+</style>

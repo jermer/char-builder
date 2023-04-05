@@ -1,10 +1,12 @@
+
+<template></template>
+
 <!-- 
     PopperWrapper
 
     Component that sets default properties styles for Popper components.
 
     See: https://valgeirb.github.io/vue3-popper/guide/getting-started.html#how-can-i-wrap-popper-with-my-own-component
- -->
 
 <script>
 import { defineComponent } from "vue";
@@ -19,8 +21,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <!-- Hardcoded "hover", "openDelay" and "closeDelay" -->
-    <Popper v-bind="$attrs" hover openDelay="200" closeDelay="100">
+    <Popper v-bind="$attrs" hover openDelay="100" closeDelay="100">
         <slot />
         <template #content="props">
             <slot name="content" v-bind="props" />
@@ -40,3 +41,5 @@ export default defineComponent({
     --popper-theme-box-shadow: 0 6px 30px -6px rgba(0, 0, 0, 0.25);
 }
 </style>
+
+-->
