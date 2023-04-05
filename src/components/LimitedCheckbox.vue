@@ -93,7 +93,7 @@ export default {
         <span v-for="(item, idx) in items" data-bs-toggle="tooltip" :title="item.tooltip">
             <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="button" @click="handleClick"
                 :name="name">
-                {{ item.value }}
+                {{ item.name }}
             </button>
         </span>
     </div>

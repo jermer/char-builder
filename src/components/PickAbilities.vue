@@ -1,9 +1,11 @@
 
 <script>
-import { character } from './character.js';
+import { character } from '../models/character.js';
+import { options } from '../models/options.js';
 
 export default {
     mounted() {
+        // set up drag and drop
         const options = {
             accepts: function (el, target, source, sibling) {
                 // can't drop into a score tile into a score-drop container that already contains a score-tile
@@ -20,21 +22,20 @@ export default {
             ...document.getElementsByClassName("score-drop")
         ], options)
         drake.on('drop', function (el, target, source, sibling) {
-            console.debug("dropped!");
+            // console.debug("dropped!");
             target.dispatchEvent(new Event("drop"));
         });
-        drake.on('drag', function (el, target, source, sibling) {
-            console.debug("dragged!");
-        });
-        drake.on('cancel', function (el, container, source) {
-            console.debug("cancelled!")
-        });
+        // drake.on('drag', function (el, target, source, sibling) {
+        //     // console.debug("dragged!");
+        // });
+        // drake.on('cancel', function (el, container, source) {
+        //     // console.debug("cancelled!")
+        // });
     },
     data() {
         return {
             character,
-            // scoreLabels: ['str', 'dex', 'con', 'int', 'wis', 'cha'],
-            scoreLabels: character.abilityLabels,
+            options,
             update: 0,
         }
     },
@@ -42,7 +43,7 @@ export default {
         abilityScoresFinal() {
             this.update;
             const scoreArray = [];
-            for (const score of this.scoreLabels) {
+            for (const score of this.options.abilityLabels) {
                 // console.log(score);
                 const el = document.getElementById(score);
                 if (el && el.children.length) {
@@ -69,7 +70,7 @@ export default {
     },
     methods: {
         recalc() {
-            console.debug("Recalculating!");
+            // console.debug("Recalculating!");
             this.update++;
             character.updateAbilityScores(
                 this.abilityScoresFinal,
@@ -81,15 +82,17 @@ export default {
 </script>
 
 <template>
-    <p>Your character has six <i>ability scores</i> that describe their attributes.</p>
+    <p>Your hero has six <i>ability scores</i> that describe their attributes numerically. The higher the number, the more
+        skilled your hero is at that type of thing.</p>
 
-    <p>Arrange the six numbers (blue squares) among your character's six ability scores by dragging them into the table
+    <p>Distribute the six numbers (blue squares) among your character's ability scores by dragging them under the headings
         below.</p>
 
-    <p>You also have three bonus points (green circles) that you can distribute among the ability scores.</p>
+    <p>You also have three bonus points (green circles) that you can use to boost your ability scores however you like.
+    </p>
 
     <div class='card'>
-        <div id="tile-container" class="card-body">
+        <div id="tile-container" class="card-body" @drop="recalc">
             <div class="score-tile">15</div>
             <div class="score-tile">14</div>
             <div class="score-tile">13</div>
@@ -102,27 +105,18 @@ export default {
         </div>
     </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <td></td>
-                <td></td>
-                <td>Total</td>
-                <td>Modifier</td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(score, idx) in scoreLabels">
-                <th scope="row">{{ score.toUpperCase() }}</th>
-                <td>
-                    <div :id="score" class="score-drop" @drop="recalc"> (drag tiles here)</div>
-                </td>
-                <td>{{ abilityScoresFinal[idx] }}</td>
-                <td>{{ abilityModifiers[idx] }}</td>
-            </tr>
-
-        </tbody>
-    </table>
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-sm-4" v-for="(score, idx) in options.abilityLabels">
+                <div class="card my-2">
+                    <h5 class="card-header" data-bs-toggle="tooltip" :data-bs-title="options.abilityTooltips[idx]"> {{
+                        score.toUpperCase()
+                        + " " + abilityScoresFinal[idx] }}</h5>
+                    <div :id="score" class="card-body score-drop" @drop="recalc"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style>
@@ -136,8 +130,6 @@ export default {
     background-color: aliceblue;
     display: table-row;
     justify-content: center;
-    height: 3rem;
-    width: 3rem;
 }
 
 .score-tile {

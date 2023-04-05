@@ -9,7 +9,8 @@ import ErrorBadge from './ErrorBadge.vue';
 </script>
 
 <script>
-import { character } from './character.js';
+import { character } from '../models/character.js';
+import { options } from '../models/options';
 
 export default {
     components: {
@@ -34,7 +35,7 @@ export default {
             <h2 class="accordion-header" id="headingOne">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                    Step 1. Decide your character's role on the team.
+                    Step 1. Choose your hero's role on the team.
                     <ErrorBadge v-if="character.showErrors && character.classError" />
                 </button>
             </h2>
@@ -49,7 +50,7 @@ export default {
             <h2 class="accordion-header" id="headingTwo">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    Step 2. Assign ability scores.
+                    Step 2. Rank your hero's abilities.
                     <ErrorBadge v-if="character.showErrors && character.abilityError" />
                 </button>
             </h2>
@@ -64,7 +65,7 @@ export default {
             <h2 class="accordion-header" id="headingThree">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    Step 3. Choose skill proficiencies.
+                    Step 3. Pick your hero's special skills.
                     <ErrorBadge v-if="character.showErrors && character.skillError" />
                 </button>
             </h2>
@@ -79,7 +80,7 @@ export default {
             <h2 class="accordion-header" id="headingFour">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                    Step 4. Get gear & equpiment.
+                    Step 4. Select your hero's gear & equpiment.
                     <ErrorBadge v-if="character.showErrors && character.gearError" />
                 </button>
             </h2>
@@ -94,7 +95,7 @@ export default {
             <h2 class="accordion-header" id="headingFive">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                    Step 5. Establish your identity.
+                    Step 5. Define your hero's identity.
                     <ErrorBadge v-if="character.showErrors && character.identityError" />
                 </button>
             </h2>

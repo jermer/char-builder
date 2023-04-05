@@ -1,7 +1,8 @@
 
 <script>
 const { PDFDocument } = PDFLib;
-import { character } from './character.js';
+import { character } from '../models/character.js';
+import { options } from '../models/options';
 
 export default {
     data() {
@@ -39,10 +40,10 @@ export default {
             // show the character class...
             form.getTextField('armorType').setText(this.character.charClass);
 
-            const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha']
+            // const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha']
             for (let i = 0; i < 6; i++) {
-                form.getTextField(`${abilities[i]}Score`).setText(this.character.abilityScores[i].toString());
-                form.getTextField(`${abilities[i]}Mod`).setText(this.character.abilityModifiers[i].toString());
+                form.getTextField(`${options.abilityLabels[i]}Score`).setText(this.character.abilityScores[i].toString());
+                form.getTextField(`${options.abilityLabels[i]}Mod`).setText(this.character.abilityModifiers[i].toString());
             }
 
             const pdfBytes = await pdfDoc.save()
@@ -55,7 +56,7 @@ export default {
 
 <template>
     <button id="pdf-btn" :class="`btn btn-dark mt-3 ${isDisabled ? '' : 'ready'}`" @click="getCharSheet">
-        Download Character Sheet
+        Download Hero Booklet
     </button>
 </template>
 
