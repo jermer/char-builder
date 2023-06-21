@@ -27,7 +27,7 @@ export default {
 </script>
 
 <template>
-    <p>Your hero's role on the team falls into one of six major categories, called their <i>character class. </i>Choose one
+    <p>Your hero's role on the team falls into one of six major categories, called their <i>character class.</i> Choose one
         of the following:</p>
 
     <div>

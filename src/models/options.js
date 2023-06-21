@@ -3,10 +3,37 @@
  * needed for rendering the PDF character sheet.
  */
 
+class menuItem {
+    constructor(name, tooltip) {
+        this.name = name;
+        if (tooltip) this.tooltip = tooltip;
+    }
+}
+
 class Skill {
     constructor(name, tooltip) {
         this.name = name;
         this.tooltip = tooltip;
+    }
+}
+
+class armorItem {
+    constructor(name, tooltip) {
+        this.name = name;
+        this.tooltip = tooltip;
+    }
+}
+
+class weaponItem {
+    constructor(name, tooltip) {
+        this.name = name;
+        this.tooltip = tooltip;
+    }
+}
+
+class gearItem {
+    constructor(name) {
+        this.name = name;
     }
 }
 
@@ -55,5 +82,60 @@ export const options = {
         new Skill("sleight of hand", "picking pockets, or locks"),
         new Skill("stealth", "sneaking, hiding"),
     ],
+    // armor
+    armorList: [
+        new menuItem("light armor", "least protection, can be worn by anyone"),
+        new menuItem("medium armor", "more protection, not available to Rogues or Wizards"),
+        new menuItem("heavy armor", "most protection, only available to Clerics and Warriors"),
+    ],
+    // simple hand-to-hand weapons
+    simpleMeleeWeaponList: [
+        new menuItem("dagger"),
+        new menuItem("hatchet"),
+        new menuItem("shortsword"),
+        new menuItem("staff"),
+        new menuItem("spear"),
+    ],
+    // advanced hand-to-hand weapons
+    advancedMeleeWeaponList: [
+        new menuItem("longsword"),
+        new menuItem("battleaxe"),
+        new menuItem("warhammer"),
+    ],
+    // simple ranged weapons
+    simpleRangeWeaponList: [
+        new menuItem("slingshot"),
+        new menuItem("light crossbow"),
+        new menuItem("shortbow"),
+    ],
+    // advanced ranged weapons
+    advancedRangeWeaponList: [
+        new menuItem("heavy crossbow"),
+        new menuItem("longbow"),
+    ],
+    // adventuring gear
+    gearList: [
+        new gearItem("ball bearings (bag of 1000)"),
+        new gearItem("blanket"),
+        new gearItem("chain (10 feet long)"),
+        new gearItem("crowbar"),
+        new gearItem("fishing rod"),
+        new gearItem("glass jug and stopper (empty)"),
+        new gearItem("grappling hook"),
+        new gearItem("hammer & nails"),
+        new gearItem("hunting trap (spring-loaded)"),
+        new gearItem("lantern & oil"),
+        new gearItem("magnifying glass"),
+        new gearItem("mirror (polished steel)"),
+        new gearItem("padlock & key"),
+        new gearItem("parchment & ink"),
+        new gearItem("pole (10 feet long)"),
+        new gearItem("rope (50 feet long)"),
+        new gearItem("shovel"),
+        new gearItem("signal horn"),
+        new gearItem("tinderbox"),
+        new gearItem("torches (bundle of 10)"),
+        new gearItem("whistle"),
+    ]
     // skills: []
 }

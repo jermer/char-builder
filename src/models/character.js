@@ -14,6 +14,7 @@ export const character = reactive({
     abilityScores: [0, 0, 0, 0, 0, 0],
     abilityModifiers: [0, 0, 0, 0, 0, 0],
     skills: [],
+    gear: [],
     // identity: {
     name: '',
     pronouns: '',
@@ -51,6 +52,9 @@ export const character = reactive({
     },
     updateSkills(newSkills) {
         this.skills = [...newSkills];
+    },
+    updateGear(newGear) {
+        this.gear = [...newGear];
     },
     updateName(newData) {
         this.name = newData;
