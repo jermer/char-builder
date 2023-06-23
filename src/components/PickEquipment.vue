@@ -10,11 +10,25 @@ import { options } from '../models/options';
 export default {
     data() {
         return {
+            armorPicked: 'none',
+            meleeWeaponPicked: 'none',
+            rangeWeaponPicked: 'none',
+            gearPicked: [],
             character,
             options,
         }
     },
     methods: {
+        handleChange(evt) {
+            // enforce the limit on number of checkboxes
+            if (this.gearPicked.length >= 5) {
+                // disable all unselected checkboxes
+                document.querySelectorAll("input[name=gear-select]:not(:checked)").forEach(el => el.setAttribute('disabled', ''))
+            } else {
+                // enable all checkboxes
+                document.querySelectorAll("input[name=gear-select]").forEach(el => el.removeAttribute('disabled', ''))
+            }
+        },
         handleUpdate(arr) {
             this.character.updateGear(arr);
         },
@@ -37,28 +51,54 @@ export default {
     <div>
         <h5>Armor</h5>
         Choose the type of armor that your hero wears.
-        <div>
-            <span v-for="(armor, idx) in options.armorList" data-bs-toggle="tooltip" :title="armor.tooltip">
-                <button type="button" class="btn btn-outline-primary m-1 armor-btn" :id="`armor-btn-${armor.name}`"
-                    data-bs-toggle="button" @click="handleClick">
-                    {{ armor.name }}
-                </button>
-            </span>
+
+        <p>You have selected: {{ armorPicked }}</p>
+
+        <div v-for="(armor, idx) in options.armorList" class="form-check">
+            <input type="radio" name="armor-select" :id="`class-${armor.name}`" :value="`${armor.name}`"
+                class="form-check-input" v-model="armorPicked" @change="handleChange" />
+            <label :for="`class-${armor.name}`" class="form-check-label">{{ armor.name + ": " + armor.tooltip }}</label>
         </div>
+
     </div>
 
     <div>
         <h5>Weapons</h5>
         Choose the weapons that your hero wields. Select <i>one hand-to-hand weapon</i> and <i>one ranged weapon</i>.
 
+        <p>
+        <div>You have selected: {{ meleeWeaponPicked }}</div>
+        <div>You have selected: {{ rangeWeaponPicked }}</div>
+        </p>
+
         Simple hand-to-hand weapons: less powerful, can be used by anyone.
+        <div v-for="(itm, idx) in options.simpleMeleeWeaponList" class="form-check">
+            <input type="radio" name="melee-select" :id="`melee-${itm.name}`" :value="`${itm.name}`"
+                class="form-check-input" v-model="meleeWeaponPicked" @change="handleChange" />
+            <label :for="`melee-${itm.name}`" class="form-check-label">{{ itm.name }}</label>
+        </div>
 
         Advanced hand-to-hand weapons: more powerful, available only to Clerics and Warriors.
-
+        <div v-for="(itm, idx) in options.advancedMeleeWeaponList" class="form-check">
+            <input type="radio" name="melee-select" :id="`melee-${itm.name}`" :value="`${itm.name}`"
+                class="form-check-input" v-model="meleeWeaponPicked" @change="handleChange" />
+            <label :for="`melee-${itm.name}`" class="form-check-label">{{ itm.name }}</label>
+        </div>
 
         Simple ranged weapons: less powerful, can be used by anyone.
+        <div v-for="(itm, idx) in options.simpleRangeWeaponList" class="form-check">
+            <input type="radio" name="range-select" :id="`range-${itm.name}`" :value="`${itm.name}`"
+                class="form-check-input" v-model="rangeWeaponPicked" @change="handleChange" />
+            <label :for="`range-${itm.name}`" class="form-check-label">{{ itm.name }}</label>
+        </div>
 
         Advanced ranged weapons: more powerful, available only to Druids and Rangers.
+        <div v-for="(itm, idx) in options.advancedRangeWeaponList" class="form-check">
+            <input type="radio" name="range-select" :id="`range-${itm.name}`" :value="`${itm.name}`"
+                class="form-check-input" v-model="rangeWeaponPicked" @change="handleChange" />
+            <label :for="`range-${itm.name}`" class="form-check-label">{{ itm.name }}</label>
+        </div>
+
 
     </div>
 
@@ -66,9 +106,15 @@ export default {
         <h5>Adventuring Gear</h5>
         Your hero has a <i>backpack</i> plus <i>5 items</i> from the list of adventuring gear below.
 
-        <!-- <p>You've got: {{ character.gear }}</p> -->
+        <p>You have selected: {{ gearPicked }}</p>
 
-        <LimitedCheckbox name="newgear" :items="options.gearList" :max-choices="5" @added="handleUpdate" />
+        <div v-for="(itm, idx) in options.gearList" class="form-check">
+            <input type="checkbox" name="gear-select" :id="`gear-${itm.name}`" :value="`${itm.name}`"
+                class="form-check-input" v-model="gearPicked" @change="handleChange" />
+            <label :for="`gear-${itm.name}`" class="form-check-label">{{ itm.name }}</label>
+        </div>
+
+        <!-- <LimitedCheckbox name="newgear" :items="options.gearList" :max-choices="5" @added="handleUpdate" /> -->
     </div>
 </template>
 

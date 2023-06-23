@@ -14,12 +14,14 @@ export const character = reactive({
     abilityScores: [0, 0, 0, 0, 0, 0],
     abilityModifiers: [0, 0, 0, 0, 0, 0],
     skills: [],
+    armor: '',
+    meleeWeapon: '',
+    rangeWeapn: '',
     gear: [],
-    // identity: {
     name: '',
     pronouns: '',
     description: '',
-    // },
+
     // error indicators
     showErrors: false,
     classError: computed(() => {

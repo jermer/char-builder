@@ -4,16 +4,23 @@
  */
 
 class menuItem {
-    constructor(name, tooltip) {
+    constructor(name, tooltip, fieldName) {
         this.name = name;
+        this.fieldName = name;
+
         if (tooltip) this.tooltip = tooltip;
+        if (fieldName) this.fieldName = fieldName;
     }
 }
 
 class Skill {
-    constructor(name, tooltip) {
+    constructor(name, tooltip, ability, fieldName) {
         this.name = name;
-        this.tooltip = tooltip;
+        this.fieldName = name;
+        this.ability = ability;
+
+        if (tooltip) this.tooltip = tooltip;
+        if (fieldName) this.fieldName = fieldName;
     }
 }
 
@@ -24,10 +31,15 @@ class armorItem {
     }
 }
 
-class weaponItem {
-    constructor(name, tooltip) {
+// hmm...
+class Weapon {
+    constructor(name, description, isSimple, attackAbility, damageDice, properties = []) {
         this.name = name;
-        this.tooltip = tooltip;
+        this.description = description;
+        this.isSimple = isSimple;
+        this.attackAbility = attackAbility;
+        this.damageDice = damageDice;
+        this.properties = properties;
     }
 }
 
@@ -38,9 +50,10 @@ class gearItem {
 }
 
 class heroItem {
-    constructor(name, tooltip) {
+    constructor(name, tooltip, savingThrows) {
         this.name = name;
         this.tooltip = tooltip;
+        this.savingThrows = savingThrows;
     }
 }
 
@@ -57,62 +70,75 @@ export const options = {
     ],
     // character classes and their tooltips
     classList: [
-        new heroItem("cleric", "front-line fighter who also channels healing magic"),
-        new heroItem("druid", "magic-user who embodies the primal power of nature"),
-        new heroItem("ranger", "long-range fighter with superior wildnerness skills"),
-        new heroItem("rogue", "shadowy figure with a talent for sneaking and subterfuge"),
-        new heroItem("warrior", "front-line fighter who can inspire their allies"),
-        new heroItem("wizard", "magic-user with a broad variety of arcane skills"),
+        new heroItem("cleric", "front-line fighter who also channels healing magic", ["str", "cha"]),
+        new heroItem("druid", "magic-user who embodies the primal power of nature", ["dex", "wis"]),
+        new heroItem("ranger", "long-range fighter with superior wildnerness skills", ["dex", "con"]),
+        new heroItem("rogue", "shadowy figure with a talent for sneaking and subterfuge", ["dex", "cha"]),
+        new heroItem("warrior", "front-line fighter who can inspire their allies", ["str", "con"]),
+        new heroItem("wizard", "magic-user with a broad variety of arcane skills", ["int", "wis"]),
     ],
     // skills and their tooltips
     skillList: [
-        new Skill("acrobatics", "balancing, tumbling"),
-        new Skill("athletics", "climbing, jumping, swimming"),
-        new Skill("brawn", "lifting, pushing, breaking"),
-        new Skill("deception", "misleading, conning, lying"),
-        new Skill("insight", "reading someone's intentions"),
-        new Skill("intimidation", "threatening, convincing"),
-        new Skill("investigation", "searching, making deductions"),
-        new Skill("medicine", "diagnosing, applying first aid"),
-        new Skill("nature & survival", "tracking, hunting, navigating"),
-        new Skill("perception", "detecting, noticing, sensing"),
-        new Skill("performance", "entertaining, mimicking"),
-        new Skill("persuasion", "influencing, negotiating"),
-        new Skill("recollection", "remembering facts about the world"),
-        new Skill("sleight of hand", "picking pockets, or locks"),
-        new Skill("stealth", "sneaking, hiding"),
+        new Skill("acrobatics", "balancing, tumbling", "dex"),
+        new Skill("athletics", "climbing, jumping, swimming", "str"),
+        new Skill("brawn", "lifting, pushing, breaking", "str"),
+        new Skill("deception", "misleading, conning, lying", "cha"),
+        new Skill("insight", "reading someone's intentions", "wis"),
+        new Skill("intimidation", "threatening, convincing", "str"),
+        new Skill("investigation", "searching, making deductions", "int"),
+        new Skill("medicine", "diagnosing, applying first aid", "int"),
+        new Skill("nature & survival", "tracking, hunting, navigating", "wis", "natureSurvival"),
+        new Skill("perception", "detecting, noticing, sensing", "wis"),
+        new Skill("performance", "entertaining, mimicking", "cha"),
+        new Skill("persuasion", "influencing, negotiating", "cha"),
+        new Skill("recollection", "remembering facts about the world", "int"),
+        new Skill("sleight of hand", "picking pockets, or locks", "dex", "sleightOfHand"),
+        new Skill("stealth", "sneaking, hiding", "dex"),
     ],
+
+
     // armor
     armorList: [
         new menuItem("light armor", "least protection, can be worn by anyone"),
         new menuItem("medium armor", "more protection, not available to Rogues or Wizards"),
         new menuItem("heavy armor", "most protection, only available to Clerics and Warriors"),
     ],
+
+    // weapons
+    weaponList: [
+        new Weapon("staff", "", true, "str", "1d6"),
+        new Weapon("longsword", false, "", "str", "1d8"),
+        new Weapon("slingshot", true, "", "dex", "1d6"),
+        new Weapon("longbow", "", false, "dex", "1d8"),
+    ],
     // simple hand-to-hand weapons
     simpleMeleeWeaponList: [
-        new menuItem("dagger"),
-        new menuItem("hatchet"),
-        new menuItem("shortsword"),
-        new menuItem("staff"),
-        new menuItem("spear"),
+        new Weapon("dagger", "", true, "str", "1d6"),
+        new Weapon("hatchet", "", true, "str", "1d6"),
+        new Weapon("shortsword", "", true, "str", "1d6"),
+        new Weapon("staff", "", true, "str", "1d6"),
+        new Weapon("spear", "", true, "str", "1d6"),
     ],
     // advanced hand-to-hand weapons
     advancedMeleeWeaponList: [
-        new menuItem("longsword"),
-        new menuItem("battleaxe"),
-        new menuItem("warhammer"),
+        new Weapon("longsword", "", false, "str", "1d8"),
+        new Weapon("battleaxe", "", false, "str", "1d8"),
+        new Weapon("warhammer", "", false, "str", "1d8"),
     ],
     // simple ranged weapons
     simpleRangeWeaponList: [
-        new menuItem("slingshot"),
-        new menuItem("light crossbow"),
-        new menuItem("shortbow"),
+        new Weapon("slingshot", "", true, "dex", "1d6"),
+        new Weapon("light crossbow", "", true, "dex", "1d6"),
+        new Weapon("shortbow", "", true, "dex", "1d6"),
     ],
     // advanced ranged weapons
     advancedRangeWeaponList: [
-        new menuItem("heavy crossbow"),
-        new menuItem("longbow"),
+        new Weapon("heavy crossbow", "", false, "dex", "1d8"),
+        new Weapon("longbow", "", false, "dex", "1d8"),
     ],
+
+
+
     // adventuring gear
     gearList: [
         new gearItem("ball bearings (bag of 1000)"),
