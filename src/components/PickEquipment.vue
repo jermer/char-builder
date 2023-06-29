@@ -20,6 +20,8 @@ export default {
     },
     methods: {
         handleChange(evt) {
+            console.debug("Updating gear...");
+
             this.character.updateArmor(this.armorPicked);
 
             // enforce the limit on number of checkboxes
@@ -64,6 +66,7 @@ export default {
     </div>
 
     <div>
+        <hr />
         <h5>Weapons</h5>
         Choose the weapons that your hero wields. Select <i>one hand-to-hand weapon</i> and <i>one ranged weapon</i>.
 
@@ -72,7 +75,49 @@ export default {
         <div>You have selected: {{ rangeWeaponPicked }}</div>
         </p>
 
-        Simple hand-to-hand weapons: less powerful, can be used by anyone.
+        Hand-to-hand Weapons. Simple hand-to-hand weapons can be used by anyone. Advanced hand-to-hand weapons are more
+        powerful, but can only be used by Clerics and Warriors.
+
+        <select name="melee-select" class="form-select" v-model="meleeWeaponPicked" @change="handleChange">
+            <optgroup label="simple weapons">
+                <template v-for="w in options.weaponList">
+                    <option v-if="w.isSimple && w.attackAbility === 'str'" :value="w.name">
+                        {{ w.name }}
+                    </option>
+                </template>
+            </optgroup>
+            <optgroup label="advanced weapons">
+                <template v-for="w in options.weaponList">
+                    <option v-if="!w.isSimple && w.attackAbility === 'str'"
+                        :disabled="character.charClass !== 'cleric' && character.charClass !== 'warrior'">{{ w.name }}
+                    </option>
+                </template>
+            </optgroup>
+        </select>
+
+        <br />
+
+        Ranged Weapons. Simple ranged weapons can be used by anyone. Advanced ranged weapons are more powerful, but can only
+        be used by Druids and Rangers.
+
+        <select name="range-select" class="form-select" v-model="rangeWeaponPicked" @change="handleChange">
+            <optgroup label="simple weapons">
+                <template v-for="w in options.weaponList">
+                    <option v-if="w.isSimple && w.attackAbility === 'dex'" :value="w.name">
+                        {{ w.name }}
+                    </option>
+                </template>
+            </optgroup>
+            <optgroup label="advanced weapons">
+                <template v-for="w in options.weaponList">
+                    <option v-if="!w.isSimple && w.attackAbility === 'dex'"
+                        :disabled="character.charClass !== 'druid' && character.charClass !== 'ranger'">{{ w.name }}
+                    </option>
+                </template>
+            </optgroup>
+        </select>
+
+        <!-- Simple hand-to-hand weapons: less powerful, can be used by anyone.
         <div v-for="(itm, idx) in options.simpleMeleeWeaponList" class="form-check">
             <input type="radio" name="melee-select" :id="`melee-${itm.name}`" :value="`${itm.name}`"
                 class="form-check-input" v-model="meleeWeaponPicked" @change="handleChange" />
@@ -99,11 +144,12 @@ export default {
                 class="form-check-input" v-model="rangeWeaponPicked" @change="handleChange" />
             <label :for="`range-${itm.name}`" class="form-check-label">{{ itm.name }}</label>
         </div>
-
+ -->
 
     </div>
 
     <div>
+        <hr />
         <h5>Adventuring Gear</h5>
         Your hero has a <i>backpack</i> plus <i>5 items</i> from the list of adventuring gear below.
 

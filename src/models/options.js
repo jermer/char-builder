@@ -106,36 +106,48 @@ export const options = {
 
     // weapons
     weaponList: [
-        new Weapon("staff", "", true, "str", "1d6"),
-        new Weapon("longsword", false, "", "str", "1d8"),
-        new Weapon("slingshot", true, "", "dex", "1d6"),
-        new Weapon("longbow", "", false, "dex", "1d8"),
-    ],
-    // simple hand-to-hand weapons
-    simpleMeleeWeaponList: [
+        // simple melee weapons
         new Weapon("dagger", "", true, "str", "1d6"),
-        new Weapon("hatchet", "", true, "str", "1d6"),
         new Weapon("shortsword", "", true, "str", "1d6"),
         new Weapon("staff", "", true, "str", "1d6"),
-        new Weapon("spear", "", true, "str", "1d6"),
-    ],
-    // advanced hand-to-hand weapons
-    advancedMeleeWeaponList: [
-        new Weapon("longsword", "", false, "str", "1d8"),
+        // advanced melee weapons
         new Weapon("battleaxe", "", false, "str", "1d8"),
+        new Weapon("longsword", "", false, "str", "1d8"),
         new Weapon("warhammer", "", false, "str", "1d8"),
-    ],
-    // simple ranged weapons
-    simpleRangeWeaponList: [
-        new Weapon("slingshot", "", true, "dex", "1d6"),
+        // simple ranged weapons
         new Weapon("light crossbow", "", true, "dex", "1d6"),
         new Weapon("shortbow", "", true, "dex", "1d6"),
-    ],
-    // advanced ranged weapons
-    advancedRangeWeaponList: [
+        new Weapon("slingshot", "", true, "dex", "1d6"),
+        // advanced ranged weapons
         new Weapon("heavy crossbow", "", false, "dex", "1d8"),
         new Weapon("longbow", "", false, "dex", "1d8"),
     ],
+
+    // simple hand-to-hand weapons
+    // simpleMeleeWeaponList: [
+    //     new Weapon("dagger", "", true, "str", "1d6"),
+    //     new Weapon("hatchet", "", true, "str", "1d6"),
+    //     new Weapon("shortsword", "", true, "str", "1d6"),
+    //     new Weapon("staff", "", true, "str", "1d6"),
+    //     new Weapon("spear", "", true, "str", "1d6"),
+    // ],
+    // // advanced hand-to-hand weapons
+    // advancedMeleeWeaponList: [
+    //     new Weapon("longsword", "", false, "str", "1d8"),
+    //     new Weapon("battleaxe", "", false, "str", "1d8"),
+    //     new Weapon("warhammer", "", false, "str", "1d8"),
+    // ],
+    // // simple ranged weapons
+    // simpleRangeWeaponList: [
+    //     new Weapon("slingshot", "", true, "dex", "1d6"),
+    //     new Weapon("light crossbow", "", true, "dex", "1d6"),
+    //     new Weapon("shortbow", "", true, "dex", "1d6"),
+    // ],
+    // // advanced ranged weapons
+    // advancedRangeWeaponList: [
+    //     new Weapon("heavy crossbow", "", false, "dex", "1d8"),
+    //     new Weapon("longbow", "", false, "dex", "1d8"),
+    // ],
 
 
 
