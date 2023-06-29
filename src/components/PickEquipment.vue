@@ -10,9 +10,9 @@ import { options } from '../models/options';
 export default {
     data() {
         return {
-            armorPicked: 'none',
-            meleeWeaponPicked: 'none',
-            rangeWeaponPicked: 'none',
+            armorPicked: '',
+            meleeWeaponPicked: '',
+            rangeWeaponPicked: '',
             gearPicked: [],
             character,
             options,
@@ -20,6 +20,8 @@ export default {
     },
     methods: {
         handleChange(evt) {
+            this.character.updateArmor(this.armorPicked);
+
             // enforce the limit on number of checkboxes
             if (this.gearPicked.length >= 5) {
                 // disable all unselected checkboxes
@@ -59,7 +61,6 @@ export default {
                 class="form-check-input" v-model="armorPicked" @change="handleChange" />
             <label :for="`class-${armor.name}`" class="form-check-label">{{ armor.name + ": " + armor.tooltip }}</label>
         </div>
-
     </div>
 
     <div>

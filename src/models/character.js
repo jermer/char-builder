@@ -35,7 +35,34 @@ export const character = reactive({
         return character.skills.length < 4;
     }),
     gearError: computed(() => {
+        console.log(character.armorError, "?")
+        return character.armorError;// || character.weaponError || character.gearError;
+    }),
+    armorError: computed(() => {
+        if (character.armor === '')
+            return true;
+
+        // rogues and wizards must wear light armor
+        if (character.armor !== 'light armor'
+            && (character.charClass === 'rogue' || character.charClass === 'wizard')
+        ) {
+            return true;
+        }
+
+        // only clerics and warriors can wear heavy armor
+        if (character.armor === 'heavy armor'
+            && !(character.charClass === 'cleric' || character.charClass === 'warrior')
+        ) {
+            return true;
+        }
         return false;
+    }),
+    weaponError: computed(() => {
+        return false;
+    }),
+    armorError: computed(() => {
+        return false;
+        // return character.gear.length < 5;
     }),
     identityError: computed(() => {
         // return Object.values(character.identity).some(val => val === '');
@@ -54,6 +81,9 @@ export const character = reactive({
     },
     updateSkills(newSkills) {
         this.skills = [...newSkills];
+    },
+    updateArmor(newArmor) {
+        this.armor = newArmor;
     },
     updateGear(newGear) {
         this.gear = [...newGear];

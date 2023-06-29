@@ -27,8 +27,6 @@ export default {
     },
     computed: {
         isDisabled() {
-            return false;
-            // for testing
             return (
                 this.character.classError
                 || this.character.abilityError
@@ -48,9 +46,8 @@ export default {
             //
             // the first page of the booklet varies by class
             //
-            const frontPageUrl = '/heroBookletFrontCleric.pdf';
+            const frontPageUrl = `/heroBookletFront_${this.character.charClass}.pdf`;
             const frontPagePdfBytes = await fetch(frontPageUrl).then(res => res.arrayBuffer());
-
             const frontPagePdfDoc = await PDFDocument.load(frontPagePdfBytes);
 
             //
@@ -70,8 +67,11 @@ export default {
             // spellbook pages can be added to the booklet
             //
             let spellPagePdfDoc = null;
-            if (false) {
-                const spellPageUrl = '/heroBookletSpellsCleric.pdf';
+            if (this.character.charClass === 'cleric'
+                || this.character.charClass === 'druid'
+                || this.character.charClass === 'wizard'
+            ) {
+                const spellPageUrl = `/heroBookletSpells_${this.character.charClass}.pdf`;
                 const spellPagePdfBytes = await fetch(spellPageUrl).then(res => res.arrayBuffer());
                 spellPagePdfDoc = await PDFDocument.load(spellPagePdfBytes);
             }
@@ -113,66 +113,43 @@ export default {
         //
         //
         fillCharSheet(form) {
-            // use the temporary character
-            this.character = this.sampleCharacter;
+            // Fill in ability scores and modifiers
+            this.options.abilityLabels.forEach((el, i) => {
+                form.getTextField(`${el}Score`).setText(this.character.abilityScores[i].toString());
+                form.getTextField(`${el}Mod`).setText(this.formatModifier(this.character.abilityModifiers[i]));
+            })
 
-            console.log("Generating Character Sheet!")
-
-            // ABILITY SCORES
-            for (let i = 0; i < 6; i++) {
-                // fill in ability scores
-                form.getTextField(`${options.abilityLabels[i]}Score`).setText(this.character.abilityScores[i].toString());
-                // let modNum = this.character.abilityModifiers[i];
-                // let modStr = modNum < 0 ? modNum.toString() : `+${modNum}`;
-                // form.getTextField(`${options.abilityLabels[i]}Mod`).setText(modStr);
-                form.getTextField(`${options.abilityLabels[i]}Mod`).setText(this.formatModifier(this.character.abilityModifiers[i]));
-            }
-
-            // fill in the saving throw modifiers = same as base ability modifier
+            // fill in base saving throw modifiers = same as base ability modifiers
             this.options.abilityLabels.forEach(el => {
-                // let modNum = this.character.abilityModifiers[options.abilityLabels.indexOf(el)];
-                // let modStr = modNum < 0 ? modNum.toString() : `+${modNum}`;
-                // form.getTextField(`${el}SaveMod`).setText(modStr);
                 form.getTextField(`${el}SaveMod`).setText(
                     this.formatModifier(
                         this.character.abilityModifiers[options.abilityLabels.indexOf(el)]
                     ));
             })
 
-            // update proficient saving throws
+            // update saving throws proficiencies (based on character class)
             let classObj = this.options.classList.find(el => el.name === this.character.charClass);
             classObj.savingThrows.forEach(el => {
-                // check the box
+                // check the boxes for proficient saving throws
                 form.getCheckBox(`${el}SaveCheck`).check();
                 // update the modifier
-                let field = form.getTextField(`${el}SaveMod`);
-                // let modNum = +field.getText() || 0;
-                // modNum += 2;
-                // let modStr = modNum < 0 ? modNum.toString() : `+${modNum}`;
-                // field.setText(modStr.toString());
+                const field = form.getTextField(`${el}SaveMod`);
                 field.setText(this.formatModifier(+field.getText() + 2));
             });
 
-            // fill in the skill modifiers = same as base ability modifier
+            // fill in base skill modifiers = same as base ability modifiers
             this.options.skillList.forEach(el => {
-                // let modNum = this.character.abilityModifiers[options.abilityLabels.indexOf(el.ability)];
-                // let modStr = modNum < 0 ? modNum.toString() : `+${modNum}`;
-                // form.getTextField(`${el.fieldName}Mod`).setText(modStr);
                 form.getTextField(`${el.fieldName}Mod`).setText(
                     this.formatModifier(this.character.abilityModifiers[options.abilityLabels.indexOf(el.ability)])
                 );
             })
 
-            // update the proficient skills
+            // update skill proficiencies (based on user selections)
             this.character.skills.forEach(el => {
                 // check the boxes for the selected skills
                 form.getCheckBox(`${el}Check`).check();
                 // update the modifiers
                 let field = form.getTextField(`${el}Mod`);
-                // let modNum = +field.getText() || 0;
-                // modNum += 2;
-                // let modStr = modNum < 0 ? modNum.toString() : `+${modNum}`;
-                // field.setText(modStr.toString());
                 field.setText(this.formatModifier(+field.getText() + 2));
             });
 
@@ -180,7 +157,7 @@ export default {
             form.getTextField('armorType').setText(this.character.armor);
 
             // calculate Armor Class = DEX Modifier + (12, 14, 16) for (light, medium, heavy) armor
-            // THIS COULD BE BETTER
+            // TO DO: refactor this to armor object
             let baseAc = 12;
             if (this.character.armor === "medium armor") baseAc += 2;
             if (this.character.armor === "heavy armor") baseAc += 4;
