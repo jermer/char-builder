@@ -12,15 +12,17 @@ export default {
     CharBuilder,
     PDFButton
   },
-  // data() {
-  //   errors: []
-  // },
-  mounted() {
-    //inti tooltip
-    /// NEEDED HERE? OR JUST IN COMPONENTS?
-    Array.from(document.querySelectorAll('button[data-bs-toggle="tooltip"]'))
-      .forEach(tooltipNode => new Tooltip(tooltipNode))
-  }
+  data() {
+    return {
+      showErrors: false
+    }
+  },
+  // mounted() {
+  //   //inti tooltip
+  //   /// NEEDED HERE? OR JUST IN COMPONENTS?
+  //   Array.from(document.querySelectorAll('button[data-bs-toggle="tooltip"]'))
+  //     .forEach(tooltipNode => new Tooltip(tooltipNode))
+  // }
 }
 </script>
 
@@ -28,20 +30,19 @@ export default {
   <header class="pt-5">
     <div class="title">
       <h1>Heroes Without the Handbook</h1>
-      <div class="lead">Streamlined hero creation based on the world's most well-known roleplaying game.</div>
+      <div class="lead">Streamlined hero creation based on a certain well-known roleplaying game.</div>
     </div>
 
     <hr />
 
     <div class="instructions">
       <h5>- INSTRUCTIONS -</h5>
-      <p>Make decisions about your hero using the sections to the right. When you're done, click the
-        button
-        to download your hero booklet!</p>
+      <p>Follow the prompts in each section. When you're done, click the
+        button to download your hero booklet!</p>
 
-      <PDFButton />
+      <PDFButton @update-error-flag="this.showErrors = true" />
 
-      <p class="small mt-4"><a href="#" data-bs-toggle="modal" data-bs-target="#aboutModal">ABOUT</a></p>
+      <p class="small mt-4"><a href="#" data-bs-toggle="modal" data-bs-target="#aboutModal">(ABOUT)</a></p>
       <AboutModal />
     </div>
 
@@ -49,7 +50,7 @@ export default {
   </header>
 
   <main>
-    <CharBuilder />
+    <CharBuilder :showErrors="this.showErrors" />
   </main>
 </template>
 

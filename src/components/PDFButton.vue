@@ -1,17 +1,25 @@
 
 <script>
 const { PDFDocument } = PDFLib;
-import { character } from '../models/character.js';
+// import { character } from '../models/character.js';
+import { getCharacter } from '../models/character';
 import { options } from '../models/options';
 
 export default {
+    emits: ['update-error-flag'],
+    setup() {
+        const { char, characterClassError, abilitiesError, skillsError, equipmentError } = getCharacter();
+        return { char, characterClassError, abilitiesError, skillsError, equipmentError };
+    },
     data() {
         return {
-            character,
+            character: {},
             options,
+            //
             // SAMPLE CHARACTER FOR TESTING
+            //
             sampleCharacter: {
-                charClass: 'warrior',
+                characterClass: 'warrior',
                 abilityScores: [10, 14, 12, 8, 17, 18],
                 abilityModifiers: [0, 2, 1, -1, 3, 4],
                 skills: ['stealth', 'natureSurvival', 'intimidation', 'recollection'],
@@ -23,10 +31,17 @@ export default {
                 pronouns: 'he/him',
                 description: 'A test subject to see if we can get the PDF stuff working correctly!',
             }
+            // END TEST CHARACTER
         }
     },
     computed: {
         isDisabled() {
+            return (
+                this.characterClassError
+                || this.abilitiesError
+                || this.skillsError
+                || this.equipmentError
+            );
             return (
                 this.character.classError
                 || this.character.abilityError
@@ -39,47 +54,48 @@ export default {
     methods: {
         async getCharSheet() {
             if (this.isDisabled) {
-                character.setErrorFlag(true);
+                // emit the clicked event to the parent
+                this.$emit('update-error-flag')
                 return;
             }
+
+            this.character = this.char;
 
             //
             // the first page of the booklet varies by class
             //
-            const frontPageUrl = `/heroBookletFront_${this.character.charClass}.pdf`;
+            const frontPageUrl = `/heroBookletFront_${this.character.characterClass}.pdf`;
+            // get the document as a byte array
             const frontPagePdfBytes = await fetch(frontPageUrl).then(res => res.arrayBuffer());
+            // converty to PDF document
             const frontPagePdfDoc = await PDFDocument.load(frontPagePdfBytes);
+            // get the form and fill it in
+            const frontPageForm = frontPagePdfDoc.getForm();
+            this.fillFrontPage(frontPageForm);
+            frontPagePdfDoc.save();
 
             //
             // the interior page is the same for all booklets
             //
             const interiorPageUrl = '/heroBookletInterior.pdf';
-            // get the document as byte array
             const interiorPdfBytes = await fetch(interiorPageUrl).then(res => res.arrayBuffer());
-            // convert to PDF document
             const interiorPdfDoc = await PDFDocument.load(interiorPdfBytes);
-            // get the form and fill it in
             const interiorForm = interiorPdfDoc.getForm();
             this.fillCharSheet(interiorForm);
             interiorPdfDoc.save();
 
             //
-            // spellbook pages can be added to the booklet
+            // spellbook pages are added to the booklet, if a spellcasting class was chosen
             //
             let spellPagePdfDoc = null;
-            if (this.character.charClass === 'cleric'
-                || this.character.charClass === 'druid'
-                || this.character.charClass === 'wizard'
+            if (this.character.characterClass === 'cleric'
+                || this.character.characterClass === 'druid'
+                || this.character.characterClass === 'wizard'
             ) {
-                const spellPageUrl = `/heroBookletSpells_${this.character.charClass}.pdf`;
+                const spellPageUrl = `/heroBookletSpells_${this.character.characterClass}.pdf`;
                 const spellPagePdfBytes = await fetch(spellPageUrl).then(res => res.arrayBuffer());
                 spellPagePdfDoc = await PDFDocument.load(spellPagePdfBytes);
             }
-
-            // const pdfDoc = await PDFDocument.load(interiorPdfBytes);
-
-            // save the updated PDF
-            // const finalPdfBytes = await interiorPdfDoc.save()
 
             // Add interior page to front page
             const [page2] = await frontPagePdfDoc.copyPages(interiorPdfDoc, [0]);
@@ -94,7 +110,7 @@ export default {
 
             const finalPdfBytes = await frontPagePdfDoc.save()
 
-            // TO DO: have the document open in a new tab instead of automatically downloading
+            // open document in a new tab instead of automatically downloading?
             download(finalPdfBytes, "HeroBooklet.pdf", "application/pdf");
         },
         //
@@ -106,8 +122,12 @@ export default {
         //
         //
         //
-        fillFrontPage() {
-
+        fillFrontPage(form) {
+            // currently, we don't have a separate "pronouns" field on the form
+            form.getTextField('heroName')
+                .setText(`${this.character.name} (${this.character.pronouns})`);
+            form.getTextField('heroDescription').setText(this.character.description);
+            form.getTextField('heroLevel').setText('1');
         },
         //
         //
@@ -128,7 +148,7 @@ export default {
             })
 
             // update saving throws proficiencies (based on character class)
-            let classObj = this.options.classList.find(el => el.name === this.character.charClass);
+            let classObj = this.options.classList.find(el => el.name === this.character.characterClass);
             classObj.savingThrows.forEach(el => {
                 // check the boxes for proficient saving throws
                 form.getCheckBox(`${el}SaveCheck`).check();
@@ -169,8 +189,8 @@ export default {
             form.getTextField('hpMax').setText(hp.toString());
 
             // list the weapons
-            let weapon1Obj = options.weaponList.find(el => el.name === this.character.meleeWeapon);
-            let weapon2Obj = options.weaponList.find(el => el.name === this.character.rangeWeapon);
+            let weapon1Obj = options.weaponList.find(el => el.name === this.character.weapon1);
+            let weapon2Obj = options.weaponList.find(el => el.name === this.character.weapon2);
 
             // melee weapon
             let w1DamageMod = this.character.abilityModifiers[0];

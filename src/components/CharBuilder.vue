@@ -9,10 +9,12 @@ import ErrorBadge from './ErrorBadge.vue';
 </script>
 
 <script>
-import { character } from '../models/character.js';
+// import { character } from '../models/character.js';
+import { getCharacter } from '../models/character.js';
 import { options } from '../models/options';
 
 export default {
+    props: ['showErrors'],
     components: {
         PickClass,
         PickAbilities,
@@ -22,8 +24,19 @@ export default {
         ErrorBadge
     },
     data() {
+        const {
+            characterClassError,
+            abilitiesError,
+            skillsError,
+            equipmentError,
+            identityError } = getCharacter();
         return {
-            character,
+            // character,
+            characterClassError,
+            abilitiesError,
+            skillsError,
+            equipmentError,
+            identityError
         }
     }
 }
@@ -36,13 +49,13 @@ export default {
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                     Step 1. Choose your hero's role on the team.
-                    <ErrorBadge v-if="character.showErrors && character.classError" />
+                    <ErrorBadge v-if="showErrors && characterClassError" />
                 </button>
             </h2>
             <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
                 data-bs-parent="#accordionCharacter">
                 <div class="accordion-body">
-                    <PickClass />
+                    <PickClass :showErrors="showErrors" />
                 </div>
             </div>
         </div>
@@ -51,13 +64,13 @@ export default {
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                     Step 2. Rank your hero's abilities.
-                    <ErrorBadge v-if="character.showErrors && character.abilityError" />
+                    <ErrorBadge v-if="showErrors && abilitiesError" />
                 </button>
             </h2>
             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
                 data-bs-parent="#accordionCharacter">
                 <div class="accordion-body">
-                    <PickAbilities />
+                    <PickAbilities :showErrors="showErrors" />
                 </div>
             </div>
         </div>
@@ -66,13 +79,13 @@ export default {
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                     Step 3. Pick your hero's special skills.
-                    <ErrorBadge v-if="character.showErrors && character.skillError" />
+                    <ErrorBadge v-if="showErrors && skillsError" />
                 </button>
             </h2>
             <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
                 data-bs-parent="#accordionCharacter">
                 <div class="accordion-body">
-                    <PickSkills />
+                    <PickSkills :showErrors="showErrors" />
                 </div>
             </div>
         </div>
@@ -81,13 +94,13 @@ export default {
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                     Step 4. Select your hero's gear & equpiment.
-                    <ErrorBadge v-if="character.showErrors && character.gearError" />
+                    <ErrorBadge v-if="showErrors && equipmentError" />
                 </button>
             </h2>
             <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
                 data-bs-parent="#accordionCharacter">
                 <div class="accordion-body">
-                    <PickEquipment />
+                    <PickEquipment :showErrors="showErrors" />
                 </div>
             </div>
         </div>
@@ -96,13 +109,13 @@ export default {
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
                     Step 5. Define your hero's identity.
-                    <ErrorBadge v-if="character.showErrors && character.identityError" />
+                    <ErrorBadge v-if="showErrors && identityError" />
                 </button>
             </h2>
             <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
                 data-bs-parent="#accordionCharacter">
                 <div class="accordion-body">
-                    <PickIdentity />
+                    <PickIdentity :showErrors="showErrors" />
                 </div>
             </div>
         </div>

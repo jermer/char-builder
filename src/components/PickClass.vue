@@ -1,54 +1,47 @@
 
 <script>
-import { character } from '../models/character.js';
+import { getCharacter } from '../models/character';
 import { options } from '../models/options';
 
 export default {
+    props: ['showErrors'],
+    setup() {
+        const { char, characterClassError, updateCharacter } = getCharacter();
+        return { char, characterClassError, updateCharacter };
+    },
     data() {
         return {
             classPicked: "nothing yet!",
-            character,
             options,
         }
     },
     methods: {
         handleChange(evt) {
-            this.character.updateCharClass(this.classPicked);
+            this.updateCharacter({ characterClass: this.classPicked });
         },
-        // handleClick(evt) {
-        //     // mark as inactive all buttons other than this one
-        //     const activeButtons = document.querySelectorAll(`button.class-btn.active`);
-        //     activeButtons.forEach(b => {
-        //         if (b.id !== evt.target.id)
-        //             b.classList.remove('active');
-        //     });
-        //     // update the character in state
-        //     const newClass = evt.target.classList.contains('active') ? evt.target.innerText : '';
-        //     this.character.updateCharClass(newClass);
-        // }
     }
 }
 </script>
 
 <template>
+    <!-- Instructions -->
     <p>Your hero's role on the team falls into one of six major categories, called their <i>character class.</i> Choose one
         of the following:</p>
 
-    <!-- <div>Picked: {{ classPicked }}</div> -->
-    <p>You have selected: {{ character.charClass }}</p>
+    <!-- Error message -->
+    <div v-if="showErrors && characterClassError" class="alert alert-warning">
+        {{ characterClassError }}
+    </div>
 
+    <!-- Debugging -->
+    <!-- <div class="alert alert-secondary">You have selected: {{ char.characterClass }}</div> -->
+
+    <!-- Render list of radio buttons -->
     <div v-for="(cls, idx) in options.classList" class="form-check">
         <input type="radio" name="class-select" :id="`class-${cls.name}`" :value="`${cls.name}`" class="form-check-input"
             v-model="classPicked" @change="handleChange" />
-        <label :for="`class-${cls.name}`" class="form-check-label">{{ cls.name + ": " + cls.tooltip }}</label>
+        <label :for="`class-${cls.name}`" class="form-check-label">
+            {{ cls.name + ": " + cls.tooltip }}
+        </label>
     </div>
-
-    <!-- <div>
-        <span v-for="(cls, idx) in options.classList" data-bs-toggle="tooltip" :title="cls.tooltip">
-            <button type="button" class="btn btn-outline-primary m-1 class-btn" :id="`class-btn-${cls.name}`"
-                data-bs-toggle="button" @click="handleClick">
-                {{ cls.name }}
-            </button>
-        </span>
-    </div> -->
 </template>

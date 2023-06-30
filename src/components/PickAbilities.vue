@@ -1,9 +1,14 @@
 
 <script>
-import { character } from '../models/character.js';
+import { getCharacter } from '../models/character.js';
 import { options } from '../models/options.js';
 
 export default {
+    props: ['showErrors'],
+    setup() {
+        const { char, abilitiesError, updateCharacter } = getCharacter();
+        return { char, abilitiesError, updateCharacter };
+    },
     mounted() {
         // set up drag and drop
         const options = {
@@ -22,29 +27,20 @@ export default {
             ...document.getElementsByClassName("score-drop")
         ], options)
         drake.on('drop', function (el, target, source, sibling) {
-            // console.debug("dropped!");
             target.dispatchEvent(new Event("drop"));
         });
-        // drake.on('drag', function (el, target, source, sibling) {
-        //     // console.debug("dragged!");
-        // });
-        // drake.on('cancel', function (el, container, source) {
-        //     // console.debug("cancelled!")
-        // });
     },
     data() {
         return {
-            character,
             options,
             update: 0,
         }
     },
     computed: {
-        abilityScoresFinal() {
+        abilityScoreTotals() {
             this.update;
             const scoreArray = [];
             for (const score of this.options.abilityLabels) {
-                // console.log(score);
                 const el = document.getElementById(score);
                 if (el && el.children.length) {
                     let total = 0;
@@ -59,29 +55,20 @@ export default {
             }
             return scoreArray;
         },
-        abilityModifiers() {
-            return this.abilityScoresFinal.map(score => {
-                if (score === '--')
-                    return '--'
-                const mod = Math.floor(score / 2) - 5;
-                return mod < 0 ? `${mod}` : `+${mod}`;
-            })
-        }
     },
     methods: {
         recalc() {
-            // console.debug("Recalculating!");
+            // force the computed property to recalculate
+            // could this be done with a watcher?
             this.update++;
-            character.updateAbilityScores(
-                this.abilityScoresFinal,
-                this.abilityModifiers
-            );
+            this.updateCharacter({ abilityScores: this.abilityScoreTotals });
         }
     }
 }
 </script>
 
 <template>
+    <!-- Instructions -->
     <p>Your hero has six <i>ability scores</i> that describe their attributes numerically. The higher the number, the more
         skilled your hero is at that type of thing.</p>
 
@@ -91,6 +78,12 @@ export default {
     <p>You also have three bonus points (green circles) that you can use to boost your ability scores however you like.
     </p>
 
+    <!-- Error message -->
+    <div v-if="showErrors && abilitiesError" class="alert alert-warning">
+        {{ abilitiesError }}
+    </div>
+
+    <!-- Render drag and drop interface for ability scores -->
     <div class='card'>
         <div id="tile-container" class="card-body" @drop="recalc">
             <div class="score-tile">15</div>
@@ -111,7 +104,7 @@ export default {
                 <div class="card my-2">
                     <h5 class="card-header" data-bs-toggle="tooltip" :data-bs-title="options.abilityTooltips[idx]"> {{
                         score.toUpperCase()
-                        + " " + abilityScoresFinal[idx] }}</h5>
+                        + " " + abilityScoreTotals[idx] }}</h5>
                     <div :id="score" class="card-body score-drop" @drop="recalc"></div>
                 </div>
             </div>
