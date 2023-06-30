@@ -17,12 +17,6 @@ export default {
       showErrors: false
     }
   },
-  // mounted() {
-  //   //inti tooltip
-  //   /// NEEDED HERE? OR JUST IN COMPONENTS?
-  //   Array.from(document.querySelectorAll('button[data-bs-toggle="tooltip"]'))
-  //     .forEach(tooltipNode => new Tooltip(tooltipNode))
-  // }
 }
 </script>
 

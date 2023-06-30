@@ -11,14 +11,7 @@ import "bootstrap"
 import "bootstrap/dist/css/bootstrap.min.css"
 import 'bootstrap/scss/bootstrap.scss';
 
-// const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="popover"]'))
-// popoverTriggerList.map(function (popoverTriggerEl) {
-//     return new Popover(popoverTriggerEl)
-// })
-
 import "dragula/dist/dragula.css"
-
-// import Popper from 'vue3-popper'
 
 //
 // Icons from Font Awesome
@@ -31,7 +24,6 @@ library.add(faExclamation, faCircleExclamation, faTriangleExclamation)
 
 const app = createApp(App)
 
-// app.component("Popper", Popper)
 app.component('font-awesome-icon', FontAwesomeIcon)
 
 // app.use(router)
