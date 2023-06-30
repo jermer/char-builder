@@ -34,7 +34,7 @@ export default {
       <p>Follow the prompts in each section. When you're done, click the
         button to download your hero booklet!</p>
 
-      <PDFButton @update-error-flag="this.showErrors = true" />
+      <PDFButton @update-error-flag="showErrors = true" />
 
       <p class="small mt-4"><a href="#" data-bs-toggle="modal" data-bs-target="#aboutModal">(ABOUT)</a></p>
       <AboutModal />
@@ -44,7 +44,7 @@ export default {
   </header>
 
   <main>
-    <CharBuilder :showErrors="this.showErrors" />
+    <CharBuilder :showErrors="showErrors" />
   </main>
 </template>
 

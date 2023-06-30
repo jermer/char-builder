@@ -123,9 +123,19 @@ export default {
         //
         //
         fillFrontPage(form) {
+            let nameText = this.character.name;
+
             // currently, we don't have a separate "pronouns" field on the form
-            form.getTextField('heroName')
-                .setText(`${this.character.name} (${this.character.pronouns})`);
+            // so we include them at the end of the name, if they exist
+            if (this.character.pronouns) {
+                let pronounText = this.character.pronouns;
+                // append parentheses, if not already present
+                if (!pronounText.startsWith('(')) pronounText = `(${pronounText}`;
+                if (!pronounText.endsWith(')')) pronounText = `${pronounText})`;
+                nameText += ` ${pronounText}`;
+            }
+
+            form.getTextField('heroName').setText(nameText);
             form.getTextField('heroDescription').setText(this.character.description);
             form.getTextField('heroLevel').setText('1');
         },
