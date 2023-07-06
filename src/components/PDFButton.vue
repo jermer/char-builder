@@ -2,33 +2,39 @@
 <script>
 const { PDFDocument } = PDFLib;
 
-import heroBookletFront_cleric from "../assets/heroBookletFront_cleric.pdf";
-import heroBookletInterior from "../assets/heroBookletInterior.pdf";
-import heroBookletSpells_cleric from "../assets/heroBookletSpells_cleric.pdf";
+import {
+    frontPageDocIds,
+    interiorDocId,
+    spellBookDocIds
+} from "../models/gDocIds";
 
-// const heroBookletFront_cleric = "https://drive.google.com/uc?id=1eLTj5PSM9UzlyEssze_7kjrZyj7Ir8IJ";
-// const heroBookletInterior = "https://drive.google.com/file/d/1SqT1a5K30KUEHfz_4Zj4j3_tt--ymRXX/";
-// const heroBookletSpells_cleric = "https://drive.google.com/file/d/1yjYdFzEcDcxeFH38G6C5CQLsrky8y0X3/";
+const API_KEY = import.meta.env.VITE_API_KEY;
 
-// import { character } from '../models/character.js';
+const pdfUrl = (docId) => {
+    return `https://www.googleapis.com/drive/v3/files/${docId}`
+        + `?alt=media`
+        + `&key=${API_KEY}`
+};
+
 import { getCharacter } from '../models/character';
 import { options } from '../models/options';
 
 export default {
     emits: ['update-error-flag'],
     setup() {
-        const { char, characterClassError, abilitiesError, skillsError, equipmentError } = getCharacter();
-        return { char, characterClassError, abilitiesError, skillsError, equipmentError };
+        const { character, characterClassError, abilitiesError, skillsError, equipmentError, identityError } = getCharacter();
+        return { character, characterClassError, abilitiesError, skillsError, equipmentError, identityError };
     },
     data() {
         return {
-            character: {},
+            //character: {},
             options,
+            processing: false,
             //
             // SAMPLE CHARACTER FOR TESTING
             //
             sampleCharacter: {
-                characterClass: 'warrior',
+                characterClass: 'wizard',
                 abilityScores: [10, 14, 12, 8, 17, 18],
                 abilityModifiers: [0, 2, 1, -1, 3, 4],
                 skills: ['stealth', 'natureSurvival', 'intimidation', 'recollection'],
@@ -45,45 +51,34 @@ export default {
     },
     computed: {
         isDisabled() {
-            return true;
-
             return (
                 this.characterClassError
                 || this.abilitiesError
                 || this.skillsError
                 || this.equipmentError
-            );
-            return (
-                this.character.classError
-                || this.character.abilityError
-                || this.character.skillError
-                || this.character.gearError
-                || this.character.identityError
+                || this.identityError
             )
         }
     },
     methods: {
         async getCharSheet() {
             if (this.isDisabled) {
-                alert('PDF download coming soon!');
-                //     // emit the clicked event to the parent
-                //     this.$emit('update-error-flag')
+                // emit the clicked event to the parent
+                this.$emit('update-error-flag')
                 return;
             }
 
-            // this.character = this.char;
-            this.character = this.sampleCharacter;
+            this.processing = true;
 
             //
             // the first page of the booklet varies by class
             //
-
-            // const frontPageUrl = `heroBookletFront_${this.character.characterClass}.pdf`;
-            const frontPageUrl = heroBookletFront_cleric;
+            const frontPageUrl = pdfUrl(frontPageDocIds[this.character.characterClass]);
 
             // get the document as a byte array
-            const frontPagePdfBytes = await fetch(frontPageUrl, { 'mode': 'no-cors' }).then(res => res.arrayBuffer());
-            // converty to PDF document
+            const frontPagePdfBytes = await fetch(frontPageUrl).then(res => res.arrayBuffer());
+
+            // convert to PDF document
             const frontPagePdfDoc = await PDFDocument.load(frontPagePdfBytes);
             // get the form and fill it in
             const frontPageForm = frontPagePdfDoc.getForm();
@@ -93,10 +88,7 @@ export default {
             //
             // the interior page is the same for all booklets
             //
-
-            // const interiorPageUrl = '/heroBookletInterior.pdf';
-            const interiorPageUrl = heroBookletInterior;
-
+            const interiorPageUrl = pdfUrl(interiorDocId);
 
             const interiorPdfBytes = await fetch(interiorPageUrl).then(res => res.arrayBuffer());
             const interiorPdfDoc = await PDFDocument.load(interiorPdfBytes);
@@ -112,8 +104,7 @@ export default {
                 || this.character.characterClass === 'druid'
                 || this.character.characterClass === 'wizard'
             ) {
-                // const spellPageUrl = `/heroBookletSpells_${this.character.characterClass}.pdf`;
-                const spellPageUrl = heroBookletSpells_cleric;
+                const spellPageUrl = pdfUrl(spellBookDocIds[this.character.characterClass]);
 
                 const spellPagePdfBytes = await fetch(spellPageUrl).then(res => res.arrayBuffer());
                 spellPagePdfDoc = await PDFDocument.load(spellPagePdfBytes);
@@ -134,6 +125,8 @@ export default {
 
             // open document in a new tab instead of automatically downloading?
             download(finalPdfBytes, "HeroBooklet.pdf", "application/pdf");
+
+            this.processing = false;
         },
         //
         // Utility method to format modifiers: non-negative values should have prefix plus sign '+'
@@ -247,7 +240,9 @@ export default {
 
 <template>
     <button id="pdf-btn" :class="`btn btn-dark mt-3 ${isDisabled ? '' : 'ready'}`" @click="getCharSheet">
-        Download Hero Booklet
+        {{ processing ?
+            'Processing...'
+            : 'Download Hero Booklet' }}
     </button>
 </template>
 

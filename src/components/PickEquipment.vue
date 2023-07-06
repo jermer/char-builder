@@ -6,11 +6,11 @@ import { options } from '../models/options';
 export default {
     props: ['showErrors'],
     setup() {
-        const { char,
+        const { character,
             armorError, weapon1Error, weapon2Error, gearError,
             updateCharacter } = getCharacter();
         return {
-            char,
+            character,
             armorError, weapon1Error, weapon2Error, gearError,
             updateCharacter
         };
@@ -45,18 +45,18 @@ export default {
         filterArmor(armor) {
             if (armor === 'light armor') return false;
 
-            if (armor === 'heavy armor' && this.char.characterClass !== 'cleric' && this.char.characterClass !== 'warrior') return true;
+            if (armor === 'heavy armor' && this.character.characterClass !== 'cleric' && this.character.characterClass !== 'warrior') return true;
 
-            if (armor === 'medium armor' && this.char.characterClass === '' || this.char.characterClass === 'rogue' || this.char.characterClass === 'wizard') return true;
+            if (armor === 'medium armor' && this.character.characterClass === '' || this.character.characterClass === 'rogue' || this.character.characterClass === 'wizard') return true;
 
             return false;
         },
         filterWeapons(weapon) {
             if (weapon.isSimple) return false;
 
-            if (weapon.attackAbility === 'str' && this.char.characterClass !== 'cleric' && this.char.characterClass !== 'warrior') return true;
+            if (weapon.attackAbility === 'str' && this.character.characterClass !== 'cleric' && this.character.characterClass !== 'warrior') return true;
 
-            if (weapon.attackAbility === 'dex' && this.char.characterClass !== 'druid' && this.char.characterClass !== 'ranger') return true;
+            if (weapon.attackAbility === 'dex' && this.character.characterClass !== 'druid' && this.character.characterClass !== 'ranger') return true;
 
             return false;
         },

@@ -5,7 +5,7 @@
 
 import { reactive, ref, computed, watch } from 'vue'
 
-const char = reactive({
+const character = reactive({
     A: [1, 1, 1],
     B: 2,
     characterClass: '',
@@ -23,14 +23,14 @@ const char = reactive({
 
 export const getCharacter = () => {
     const calculateAbilityModifiers = () => {
-        char.abilityScores.map((score, idx) => {
-            char.abilityModifiers[idx] = Math.floor(score / 2) - 5;
+        character.abilityScores.map((score, idx) => {
+            character.abilityModifiers[idx] = Math.floor(score / 2) - 5;
         })
     };
 
     const updateCharacter = (newData) => {
         for (const [k, v] of Object.entries(newData)) {
-            char[k] = Array.isArray(v) ? [...v] : v;
+            character[k] = Array.isArray(v) ? [...v] : v;
             // wheh ability scores change, update ability modifiers
             if (k === 'abilityScores')
                 calculateAbilityModifiers();
@@ -38,48 +38,48 @@ export const getCharacter = () => {
     }
 
     const characterClassError = computed(() => {
-        if (!char.characterClass) return "Please select a character class."
+        if (!character.characterClass) return "Please select a character class."
         return "";
     })
 
     const abilitiesError = computed(() => {
-        const abilityTotal = char.abilityScores.reduce((acc, cur) => acc + cur, 0)
+        const abilityTotal = character.abilityScores.reduce((acc, cur) => acc + cur, 0)
         if (abilityTotal !== 75) return "Please drag all of the tiles to an ability score.";
         return "";
     })
 
     const skillsError = computed(() => {
-        if (char.skills.length < 4) return "Please select four skills."
+        if (character.skills.length < 4) return "Please select four skills."
         return "";
     })
 
     const armorError = computed(() => {
-        if (!char.armor)
+        if (!character.armor)
             return "Please select an armor choice."
         if (
-            (char.characterClass === 'rogue' || char.characterClass === 'wizard')
-            && char.armor !== 'light armor'
+            (character.characterClass === 'rogue' || character.characterClass === 'wizard')
+            && character.armor !== 'light armor'
         )
             return "Rouges and Wizards must choose light armor.";
-        if (char.armor === 'heavy armor' &&
-            !(char.characterClass === 'cleric' || char.characterClass === 'warrior'))
+        if (character.armor === 'heavy armor' &&
+            !(character.characterClass === 'cleric' || character.characterClass === 'warrior'))
             return "Only Clerics and Warriors can wear heavy armor.";
 
         return "";
     })
 
     const weapon1Error = computed(() => {
-        if (!char.weapon1) return "Please select a weapon choice."
+        if (!character.weapon1) return "Please select a weapon choice."
         return "";
     })
 
     const weapon2Error = computed(() => {
-        if (!char.weapon2) return "Please select a weapon choice."
+        if (!character.weapon2) return "Please select a weapon choice."
         return "";
     })
 
     const gearError = computed(() => {
-        if (char.gear.length < 5) return "Please select five pieces of gear."
+        if (character.gear.length < 5) return "Please select five pieces of gear."
         return "";
     })
 
@@ -98,7 +98,7 @@ export const getCharacter = () => {
     })
 
     return {
-        char,
+        character,
         characterClassError,
         abilitiesError,
         skillsError,
