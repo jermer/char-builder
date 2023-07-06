@@ -1,6 +1,15 @@
 
 <script>
 const { PDFDocument } = PDFLib;
+
+import heroBookletFront_cleric from "../assets/heroBookletFront_cleric.pdf";
+import heroBookletInterior from "../assets/heroBookletInterior.pdf";
+import heroBookletSpells_cleric from "../assets/heroBookletSpells_cleric.pdf";
+
+// const heroBookletFront_cleric = "https://drive.google.com/uc?id=1eLTj5PSM9UzlyEssze_7kjrZyj7Ir8IJ";
+// const heroBookletInterior = "https://drive.google.com/file/d/1SqT1a5K30KUEHfz_4Zj4j3_tt--ymRXX/";
+// const heroBookletSpells_cleric = "https://drive.google.com/file/d/1yjYdFzEcDcxeFH38G6C5CQLsrky8y0X3/";
+
 // import { character } from '../models/character.js';
 import { getCharacter } from '../models/character';
 import { options } from '../models/options';
@@ -24,8 +33,8 @@ export default {
                 abilityModifiers: [0, 2, 1, -1, 3, 4],
                 skills: ['stealth', 'natureSurvival', 'intimidation', 'recollection'],
                 armor: 'light armor',
-                meleeWeapon: 'longsword',
-                rangeWeapon: 'slingshot',
+                weapon1: 'longsword',
+                weapon2: 'slingshot',
                 gear: ['blanket', 'crowbar', 'lantern & oil', 'rope (50 feet long)', 'whistle'],
                 name: 'Ordgarius the Temporary',
                 pronouns: 'he/him',
@@ -36,6 +45,8 @@ export default {
     },
     computed: {
         isDisabled() {
+            return true;
+
             return (
                 this.characterClassError
                 || this.abilitiesError
@@ -54,19 +65,24 @@ export default {
     methods: {
         async getCharSheet() {
             if (this.isDisabled) {
-                // emit the clicked event to the parent
-                this.$emit('update-error-flag')
+                alert('PDF download coming soon!');
+                //     // emit the clicked event to the parent
+                //     this.$emit('update-error-flag')
                 return;
             }
 
-            this.character = this.char;
+            // this.character = this.char;
+            this.character = this.sampleCharacter;
 
             //
             // the first page of the booklet varies by class
             //
-            const frontPageUrl = `/heroBookletFront_${this.character.characterClass}.pdf`;
+
+            // const frontPageUrl = `heroBookletFront_${this.character.characterClass}.pdf`;
+            const frontPageUrl = heroBookletFront_cleric;
+
             // get the document as a byte array
-            const frontPagePdfBytes = await fetch(frontPageUrl).then(res => res.arrayBuffer());
+            const frontPagePdfBytes = await fetch(frontPageUrl, { 'mode': 'no-cors' }).then(res => res.arrayBuffer());
             // converty to PDF document
             const frontPagePdfDoc = await PDFDocument.load(frontPagePdfBytes);
             // get the form and fill it in
@@ -77,7 +93,11 @@ export default {
             //
             // the interior page is the same for all booklets
             //
-            const interiorPageUrl = '/heroBookletInterior.pdf';
+
+            // const interiorPageUrl = '/heroBookletInterior.pdf';
+            const interiorPageUrl = heroBookletInterior;
+
+
             const interiorPdfBytes = await fetch(interiorPageUrl).then(res => res.arrayBuffer());
             const interiorPdfDoc = await PDFDocument.load(interiorPdfBytes);
             const interiorForm = interiorPdfDoc.getForm();
@@ -92,7 +112,9 @@ export default {
                 || this.character.characterClass === 'druid'
                 || this.character.characterClass === 'wizard'
             ) {
-                const spellPageUrl = `/heroBookletSpells_${this.character.characterClass}.pdf`;
+                // const spellPageUrl = `/heroBookletSpells_${this.character.characterClass}.pdf`;
+                const spellPageUrl = heroBookletSpells_cleric;
+
                 const spellPagePdfBytes = await fetch(spellPageUrl).then(res => res.arrayBuffer());
                 spellPagePdfDoc = await PDFDocument.load(spellPagePdfBytes);
             }
