@@ -4,6 +4,7 @@
  */
 
 import { reactive, ref, computed, watch } from 'vue'
+import { options } from './options';
 
 const character = reactive({
     A: [1, 1, 1],
@@ -63,18 +64,36 @@ export const getCharacter = () => {
             return "Rouges and Wizards must choose light armor.";
         if (character.armor === 'heavy armor' &&
             !(character.characterClass === 'cleric' || character.characterClass === 'warrior'))
-            return "Only Clerics and Warriors can wear heavy armor.";
+            return "Only Clerics and Warriors may wear heavy armor.";
 
         return "";
     })
 
     const weapon1Error = computed(() => {
-        if (!character.weapon1) return "Please select a weapon choice."
+        const weapon1Obj = options.weaponList.find(el => el.name === character.weapon1);
+
+        if (!weapon1Obj)
+            return "Please select a weapon choice."
+        if (
+            !weapon1Obj.isSimple &&
+            !(character.characterClass === 'cleric' || character.characterClass === 'warrior')
+        )
+            return "Only Clerics and Warriors may use advanced hand-to-hand weapons."
+
         return "";
     })
 
     const weapon2Error = computed(() => {
-        if (!character.weapon2) return "Please select a weapon choice."
+        const weapon2Obj = options.weaponList.find(el => el.name === character.weapon2);
+
+        if (!weapon2Obj)
+            return "Please select a weapon choice."
+        if (
+            !weapon2Obj.isSimple &&
+            !(character.characterClass === 'druid' || character.characterClass === 'ranger')
+        )
+            return "Only Druids and Rangers may use advanced ranged weapons."
+
         return "";
     })
 

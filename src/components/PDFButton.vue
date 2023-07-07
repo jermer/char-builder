@@ -50,23 +50,39 @@ export default {
         }
     },
     computed: {
-        isDisabled() {
+        isReady() {
             return (
-                this.characterClassError
-                || this.abilitiesError
-                || this.skillsError
-                || this.equipmentError
-                || this.identityError
+                !this.characterClassError
+                && !this.abilitiesError
+                && !this.skillsError
+                && !this.equipmentError
+                && !this.identityError
             )
+        },
+        isDisabled() {
+            return false;
+            // return (
+            //     this.characterClassError
+            //     || this.abilitiesError
+            //     || this.skillsError
+            //     || this.equipmentError
+            //     || this.identityError
+            // )
         }
     },
     methods: {
         async getCharSheet() {
-            if (this.isDisabled) {
-                // emit the clicked event to the parent
-                this.$emit('update-error-flag')
+            if (!this.isReady) {
+                this.$emit('update-error-flag');
                 return;
             }
+
+            // // interface change: the button is always active
+            // if (this.isDisabled) {
+            //     // emit the clicked event to the parent
+            //     this.$emit('update-error-flag')
+            //     return;
+            // }
 
             this.processing = true;
 
