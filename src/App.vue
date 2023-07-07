@@ -41,8 +41,6 @@ export default {
       <p class="small mt-4"><a href="#" data-bs-toggle="modal" data-bs-target="#aboutModal">(ABOUT)</a></p>
       <AboutModal />
     </div>
-
-
   </header>
 
   <main>
@@ -60,6 +58,7 @@ header {
 
 main {
   max-height: 100vh;
+  overflow-y: auto;
   padding-top: 3rem;
 }
 
