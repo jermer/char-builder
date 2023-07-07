@@ -24,7 +24,7 @@
                             Attribution 4.0 International License</a>.
                     </p>
                     <p>
-                        The favicon is <a href="https://game-icons.net/1x1/lorc/winged-sword.html" target="_blank"
+                        The logo and favicon are <a href="https://game-icons.net/1x1/lorc/winged-sword.html" target="_blank"
                             rel="noopener">Winged Sword</a> by Lorc, available from <a href="https://game-icons.net/"
                             target="_blank" rel="noopener">game-icons.net</a> and used
                         under a <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC-BY

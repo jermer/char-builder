@@ -23,6 +23,8 @@ export default {
 <template>
   <header class="pt-5">
     <div class="title">
+      <!-- <img alt="Mythematics logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
+      <img alt="winged sword logo" class="logo" src="@/assets/winged-sword.svg" width="125" height="125" />
       <h1>Heroes Without the Handbook</h1>
       <div class="lead">Streamlined hero creation based on a certain well-known roleplaying game.</div>
     </div>
@@ -40,7 +42,7 @@ export default {
       <AboutModal />
     </div>
 
-    <!-- <img alt="Mythematics logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
+
   </header>
 
   <main>
@@ -71,6 +73,6 @@ main {
 
 .logo {
   display: block;
-  margin: 5rem auto 0;
+  margin: 0 auto 0;
 }
 </style>
