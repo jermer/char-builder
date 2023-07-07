@@ -48,7 +48,7 @@ export default {
             <h2 class="accordion-header" id="headingOne">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                    Step 1. Choose your hero's role on the team.
+                    <strong>Step 1.</strong>&nbsp; Choose your hero's role on the team.
                     <ErrorBadge v-if="showErrors && characterClassError" />
                 </button>
             </h2>
@@ -63,7 +63,7 @@ export default {
             <h2 class="accordion-header" id="headingTwo">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    Step 2. Rank your hero's abilities.
+                    <strong>Step 2.</strong>&nbsp; Rank your hero's abilities.
                     <ErrorBadge v-if="showErrors && abilitiesError" />
                 </button>
             </h2>
@@ -78,7 +78,7 @@ export default {
             <h2 class="accordion-header" id="headingThree">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    Step 3. Pick your hero's special skills.
+                    <strong>Step 3.</strong>&nbsp; Pick your hero's special skills.
                     <ErrorBadge v-if="showErrors && skillsError" />
                 </button>
             </h2>
@@ -93,7 +93,7 @@ export default {
             <h2 class="accordion-header" id="headingFour">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                    Step 4. Select your hero's gear & equpiment.
+                    <strong>Step 4.</strong>&nbsp; Select your hero's gear & equpiment.
                     <ErrorBadge v-if="showErrors && equipmentError" />
                 </button>
             </h2>
@@ -108,7 +108,7 @@ export default {
             <h2 class="accordion-header" id="headingFive">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                    Step 5. Define your hero's identity.
+                    <strong>Step 5.</strong>&nbsp; Define your hero's identity.
                     <ErrorBadge v-if="showErrors && identityError" />
                 </button>
             </h2>
