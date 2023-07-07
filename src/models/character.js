@@ -113,7 +113,10 @@ export const getCharacter = () => {
 
     const identityError = computed(() => {
         // this section is currently optional
-        return false;
+        if (!character.name)
+            return "Please give this hero a name."
+
+        return "";
     })
 
     return {

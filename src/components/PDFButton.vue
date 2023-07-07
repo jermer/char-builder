@@ -140,7 +140,8 @@ export default {
             const finalPdfBytes = await frontPagePdfDoc.save()
 
             // open document in a new tab instead of automatically downloading?
-            download(finalPdfBytes, "HeroBooklet.pdf", "application/pdf");
+            // download(finalPdfBytes, "HeroBooklet.pdf", "application/pdf");
+            download(finalPdfBytes, `${this.character.name} Hero Booklet.pdf`, "application/pdf");
 
             this.processing = false;
         },
