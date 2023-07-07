@@ -160,7 +160,7 @@ export default {
     <hr />
     <div>
         <h5>Adventuring Gear</h5>
-        Your hero has a <i>backpack</i> plus <i>5 items</i> from the list of adventuring gear below.
+        Your hero has a <i>backpack</i> plus <i>up to 5 items</i> from the list of adventuring gear below.
 
         <!-- Error message -->
         <div v-if="showErrors && gearError" class="alert alert-warning">

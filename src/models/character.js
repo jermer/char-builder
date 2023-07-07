@@ -98,8 +98,10 @@ export const getCharacter = () => {
     })
 
     const gearError = computed(() => {
-        if (character.gear.length < 5) return "Please select five pieces of gear."
-        return "";
+        // gear it not required
+        return false;
+        // if (character.gear.length < 5) return "Please select five pieces of gear."
+        // return "";
     })
 
     const equipmentError = computed(() => {
