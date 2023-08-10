@@ -11,16 +11,17 @@ import "bootstrap"
 import "bootstrap/dist/css/bootstrap.min.css"
 import 'bootstrap/scss/bootstrap.scss';
 
-import "dragula/dist/dragula.css"
+// Drag and Drop removed in Ability Ranking
+// import "dragula/dist/dragula.css"
 
 //
 // Icons from Font Awesome
 //
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faExclamation, faCircleExclamation, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
+import { faCircleExclamation, faTriangleExclamation, faCircleArrowUp, faCircleArrowDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faExclamation, faCircleExclamation, faTriangleExclamation)
+library.add(faCircleExclamation, faTriangleExclamation, faCircleArrowUp, faCircleArrowDown)
 
 const app = createApp(App)
 

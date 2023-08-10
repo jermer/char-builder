@@ -108,7 +108,7 @@ export default {
             <h2 class="accordion-header" id="headingFive">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                    <strong>Step 5.</strong>&nbsp; Define your hero's identity.
+                    <strong>Step 5.</strong>&nbsp; Establish your hero's identity.
                     <ErrorBadge v-if="showErrors && identityError" />
                 </button>
             </h2>

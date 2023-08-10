@@ -11,7 +11,15 @@ const character = reactive({
     B: 2,
     characterClass: '',
     abilityScores: [],
-    abilityModifiers: [],
+    abilityModifiers: {
+        'str': 4,
+        'dex': 3,
+        'con': 2,
+        'int': 1,
+        'wis': 0,
+        'cha': -1,
+    },
+    abilityRanking: ['str', 'dex', 'con', 'int', 'wis', 'cha'],
     skills: [],
     armor: '',
     weapon1: '',
@@ -24,16 +32,26 @@ const character = reactive({
 
 export const getCharacter = () => {
     const calculateAbilityModifiers = () => {
-        character.abilityScores.map((score, idx) => {
-            character.abilityModifiers[idx] = Math.floor(score / 2) - 5;
+        // character.abilityScores.map((score, idx) => {
+        //     character.abilityModifiers[idx] = Math.floor(score / 2) - 5;
+        // })
+        // modifiers run through: 4, 3, 2, 1, 0, -1
+        let modifier = 4;
+        character.abilityRanking.forEach(ability => {
+            character.abilityModifiers[ability] = modifier;
+            modifier--;
         })
+
     };
 
     const updateCharacter = (newData) => {
         for (const [k, v] of Object.entries(newData)) {
             character[k] = Array.isArray(v) ? [...v] : v;
-            // wheh ability scores change, update ability modifiers
-            if (k === 'abilityScores')
+            // when character class changes, update ability ranking
+            if (k === 'characterClass' && v)
+                character.abilityRanking = options.abilityPresets[v];
+            // when ability scores change, update ability modifiers
+            if (k === 'abilityRanking')
                 calculateAbilityModifiers();
         }
     }
@@ -44,9 +62,11 @@ export const getCharacter = () => {
     })
 
     const abilitiesError = computed(() => {
-        const abilityTotal = character.abilityScores.reduce((acc, cur) => acc + cur, 0)
-        if (abilityTotal !== 75) return "Please drag all of the tiles to an ability score.";
-        return "";
+        return false;
+        // Updated
+        // const abilityTotal = character.abilityScores.reduce((acc, cur) => acc + cur, 0)
+        // if (abilityTotal !== 75) return "Please drag all of the tiles to an ability score.";
+        // return "";
     })
 
     const skillsError = computed(() => {

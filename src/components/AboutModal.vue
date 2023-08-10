@@ -8,10 +8,29 @@
                 </div>
                 <div class="modal-body about">
                     <p>
-                        <i>Heroes Without the Handbook</i> is by Jason Ermer. More information about the project is
-                        available at <a href="https://mythematics.org/heroes/" target="_blank"
-                            rel="noopener">mythematics.org/heroes</a>.
+                        <i>Heroes Without the Handbook</i> is a project by <a href="https://www.jasonermer.com"
+                            target="_blank" rel="noopener">Jason Ermer</a>.
                     </p>
+                    <p>
+                        A certain well-known roleplaying game has seen a recent rise in popularity, sparking the curiosity
+                        of many new players. It can be challenging, however, for a newcomer to find their bearings in a game
+                        that has three core rulebooks comprising almost 1000 pages of content!
+                    </p>
+                    <p>
+                        Even the very first task -- creating a character -- can feel daunting. Newer
+                        players are
+                        often overwhelmed by the number of options available.
+                    </p>
+                    <p>
+                        Over the years I've tried to reduce this learning curve while still being true to the game. The
+                        result is this online character building tool.
+                    </p>
+                    <p>
+                        Superfans will undoubtedly have strong opinions about the decisions I've made in the
+                        streamlining process. Nevertheless, I hope this tool might be helpful for some new players, and for
+                        the GMs who want to support them!
+                    </p>
+                    <hr />
                     <p>
                         This work includes material taken from the System Reference Document 5.1 ("SRD 5.1") by Wizards of
                         the Coast LLC

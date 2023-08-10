@@ -41,7 +41,7 @@ export default {
         <input type="radio" name="class-select" :id="`class-${cls.name}`" :value="`${cls.name}`" class="form-check-input"
             v-model="classPicked" @change="handleChange" />
         <label :for="`class-${cls.name}`" class="form-check-label">
-            {{ cls.name + ": " + cls.tooltip }}
+            <b>{{ cls.name[0].toUpperCase() + cls.name.slice(1) }}</b>: {{ cls.tooltip }}
         </label>
     </div>
 </template>

@@ -6,62 +6,47 @@ import { options } from '../models/options.js';
 export default {
     props: ['showErrors'],
     setup() {
-        const { char, abilitiesError, updateCharacter } = getCharacter();
-        return { char, abilitiesError, updateCharacter };
-    },
-    mounted() {
-        // set up drag and drop
-        const options = {
-            accepts: function (el, target, source, sibling) {
-                // can't drop into a score tile into a score-drop container that already contains a score-tile
-                if (el.classList.contains('score-tile') && target.classList.contains('score-drop')) {
-                    for (const child of target.children)
-                        if (child.classList.contains('score-tile'))
-                            return false;
-                }
-                return true;
-            },
-        }
-        const drake = dragula([
-            document.getElementById("tile-container"),
-            ...document.getElementsByClassName("score-drop")
-        ], options)
-        drake.on('drop', function (el, target, source, sibling) {
-            target.dispatchEvent(new Event("drop"));
-        });
+        const { character, abilitiesError, updateCharacter } = getCharacter();
+        return { character, abilitiesError, updateCharacter };
     },
     data() {
         return {
             options,
-            update: 0,
+            displayRanking: this.character.abilityRanking,
         }
     },
-    computed: {
-        abilityScoreTotals() {
-            this.update;
-            const scoreArray = [];
-            for (const score of this.options.abilityLabels) {
-                const el = document.getElementById(score);
-                if (el && el.children.length) {
-                    let total = 0;
-                    for (const child of el.children) {
-                        total += +child.innerText;
-                    }
-                    scoreArray.push(total);
-                }
-                else {
-                    scoreArray.push('--')
-                }
-            }
-            return scoreArray;
-        },
-    },
+
     methods: {
-        recalc() {
-            // force the computed property to recalculate
-            // could this be done with a watcher?
-            this.update++;
-            this.updateCharacter({ abilityScores: this.abilityScoreTotals });
+
+        upArrowClick(evt) {
+            const abilityButton = evt.target.closest('.ability-button');
+            const idx = +abilityButton.dataset['index'];
+
+            // if we're at the start of the list, do nothing
+            if (idx <= 0)
+                return;
+
+            // swap the current entry and the one before it
+            const temp = this.displayRanking[idx];
+            this.displayRanking[idx] = this.displayRanking[idx - 1];
+            this.displayRanking[idx - 1] = temp;
+
+            this.updateCharacter({ abilityRanking: this.displayRanking });
+        },
+        downArrowClick(evt) {
+            const abilityButton = evt.target.closest('.ability-button');
+            const idx = +abilityButton.dataset['index'];
+
+            // if we're at the end of the list, do nothing
+            if (idx >= 5)
+                return;
+
+            // swap the current entry and the one after it
+            const temp = this.displayRanking[idx];
+            this.displayRanking[idx] = this.displayRanking[idx + 1];
+            this.displayRanking[idx + 1] = temp;
+
+            this.updateCharacter({ abilityRanking: this.displayRanking });
         }
     }
 }
@@ -69,95 +54,53 @@ export default {
 
 <template>
     <!-- Instructions -->
-    <p>Your hero has six <i>ability scores</i> that describe their attributes numerically. The higher the number, the more
-        skilled your hero is at that type of thing.</p>
-
-    <p>Distribute the six numbers (blue squares) among your character's ability scores by dragging them under the headings
-        below.</p>
-
-    <p>You also have three bonus points (green circles) that you can use to boost your ability scores however you like.
+    <p>Your hero has six <i>abilities</i> that they use to interact with the world.
     </p>
 
-    <!-- Error message -->
-    <div v-if="showErrors && abilitiesError" class="alert alert-warning">
-        {{ abilitiesError }}
-    </div>
+    <p>Click
+        <font-awesome-icon :icon="['fas', 'circle-arrow-up']" /> <font-awesome-icon :icon="['fas', 'circle-arrow-down']" />
+        to rank the six abilities in terms of how skilled your hero is with that kind of thing. Put your hero's strongest
+        ability at the top of the list, and their weakest
+        ability at the bottom.
+    </p>
 
-    <!-- Render drag and drop interface for ability scores -->
-    <div class='card'>
-        <div id="tile-container" class="card-body" @drop="recalc">
-            <div class="score-tile">15</div>
-            <div class="score-tile">14</div>
-            <div class="score-tile">13</div>
-            <div class="score-tile">12</div>
-            <div class="score-tile">10</div>
-            <div class="score-tile">8</div>
-            <div class="bonus-tile">+1</div>
-            <div class="bonus-tile">+1</div>
-            <div class="bonus-tile">+1</div>
-        </div>
-    </div>
+    <p v-if="character.characterClass">As a <b>{{ character.characterClass }}</b>, consider
+        putting <b>{{ options.abilityNames[options.abilityPresets[character.characterClass][0]] }}</b> at the top of your
+        ability list, but it's totally up to you!</p>
+    <p v-else>Make a selection in Step 1 for a suggestion about what to put at the top of your ability list.</p>
 
-    <div class="container text-center">
-        <div class="row">
-            <div class="col-sm-4" v-for="(score, idx) in options.abilityLabels">
-                <div class="card my-2">
-                    <h5 class="card-header" data-bs-toggle="tooltip" :data-bs-title="options.abilityTooltips[idx]"> {{
-                        score.toUpperCase()
-                        + " " + abilityScoreTotals[idx] }}</h5>
-                    <div :id="score" class="card-body score-drop" @drop="recalc"></div>
+    <table>
+        <tr v-for="(item, idx) in  this.displayRanking ">
+            <td>
+                <div class="card ability-button" :data-label="item" :data-index="idx">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <b>{{ options.abilityNames[item] }} ({{ item.toUpperCase() }})</b>
+                            <div class="float-end">
+                                <font-awesome-icon :icon="['fas', 'circle-arrow-up']" @click="upArrowClick" class="me-1"
+                                    :class="idx === 0 ? 'disabled-arrow' : 'active-arrow'" />
+                                <font-awesome-icon :icon="['fas', 'circle-arrow-down']" @click="downArrowClick"
+                                    :class="idx >= 5 ? 'disabled-arrow' : 'active-arrow'" />
+                            </div>
+                        </h6>
+                        <p class="card-text">
+                            <i>{{ options.abilityDescriptions[item] }}</i>
+                        </p>
+
+
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
+            </td>
+        </tr>
+    </table>
 </template>
 
 <style>
-#tile-container {
-    background-color: aliceblue;
-    display: table-row;
-    justify-content: center;
+.disabled-arrow {
+    color: gray;
 }
 
-.score-drop {
-    background-color: aliceblue;
-    display: table-row;
-    justify-content: center;
-}
-
-.score-tile {
-    background-color: lightskyblue;
-    /* display: flex; */
-    display: table-cell;
-    justify-content: center;
-    vertical-align: middle;
-    list-style-type: none;
-    transition: all 0.3s;
-    /* margin: 0.4rem; */
-    height: 3rem;
-    width: 3rem;
-    border: #000013 0.15rem solid;
-    border-radius: 0.2rem;
-    cursor: move;
-    text-align: center;
-    vertical-align: middle;
-}
-
-.bonus-tile {
-    background-color: yellowgreen;
-    /* display: flex; */
-    display: table-cell;
-    justify-content: center;
-    vertical-align: middle;
-    list-style-type: none;
-    transition: all 0.3s;
-    margin: 0.4rem;
-    height: 3rem;
-    width: 3rem;
-    border: #000013 0.15rem solid;
-    border-radius: 1rem;
-    cursor: move;
-    text-align: center;
-    vertical-align: middle;
+.active-arrow {
+    color: black;
 }
 </style>

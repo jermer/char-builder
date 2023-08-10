@@ -34,7 +34,7 @@ export default {
             // SAMPLE CHARACTER FOR TESTING
             //
             sampleCharacter: {
-                characterClass: 'wizard',
+                characterClass: 'cleric',
                 abilityScores: [10, 14, 12, 8, 17, 18],
                 abilityModifiers: [0, 2, 1, -1, 3, 4],
                 skills: ['stealth', 'natureSurvival', 'intimidation', 'recollection'],
@@ -60,14 +60,10 @@ export default {
             )
         },
         isDisabled() {
+            // for now, the button is always active
+            // the property 'isReady' governs whether the PDF
+            // is generated
             return false;
-            // return (
-            //     this.characterClassError
-            //     || this.abilitiesError
-            //     || this.skillsError
-            //     || this.equipmentError
-            //     || this.identityError
-            // )
         }
     },
     methods: {
@@ -76,13 +72,6 @@ export default {
                 this.$emit('update-error-flag');
                 return;
             }
-
-            // // interface change: the button is always active
-            // if (this.isDisabled) {
-            //     // emit the clicked event to the parent
-            //     this.$emit('update-error-flag')
-            //     return;
-            // }
 
             this.processing = true;
 
@@ -124,13 +113,23 @@ export default {
 
                 const spellPagePdfBytes = await fetch(spellPageUrl).then(res => res.arrayBuffer());
                 spellPagePdfDoc = await PDFDocument.load(spellPagePdfBytes);
+
+                // get the form and fill it in
+                const spellPageForm = spellPagePdfDoc.getForm();
+                this.fillSpellPage(spellPageForm);
+                spellPagePdfDoc.save();
             }
 
+            //
+            // Assemble the PDF
             // Add interior page to front page
+            //
             const [page2] = await frontPagePdfDoc.copyPages(interiorPdfDoc, [0]);
             frontPagePdfDoc.addPage(page2);
 
+            //
             // Add spellbook pages, if any
+            //
             if (spellPagePdfDoc) {
                 const [page3, page4] = await frontPagePdfDoc.copyPages(spellPagePdfDoc, [0, 1]);
                 frontPagePdfDoc.addPage(page3);
@@ -156,18 +155,16 @@ export default {
         //
         fillFrontPage(form) {
             let nameText = this.character.name;
+            let pronounText = this.character.pronouns;
 
-            // currently, we don't have a separate "pronouns" field on the form
-            // so we include them at the end of the name, if they exist
-            if (this.character.pronouns) {
-                let pronounText = this.character.pronouns;
-                // append parentheses, if not already present
+            // check pronoun text and append parentheses, if not already present
+            if (pronounText) {
                 if (!pronounText.startsWith('(')) pronounText = `(${pronounText}`;
                 if (!pronounText.endsWith(')')) pronounText = `${pronounText})`;
-                nameText += ` ${pronounText}`;
             }
 
             form.getTextField('heroName').setText(nameText);
+            form.getTextField('heroPronouns').setText(pronounText);
             form.getTextField('heroDescription').setText(this.character.description);
             form.getTextField('heroLevel').setText('1');
         },
@@ -175,19 +172,29 @@ export default {
         //
         //
         fillCharSheet(form) {
-            // Fill in ability scores and modifiers
-            this.options.abilityLabels.forEach((el, i) => {
-                form.getTextField(`${el}Score`).setText(this.character.abilityScores[i].toString());
-                form.getTextField(`${el}Mod`).setText(this.formatModifier(this.character.abilityModifiers[i]));
+            // Fill in ability modifiers and saving throws
+            this.options.abilityLabels.forEach((el) => {
+                // form.getTextField(`${el}Score`).setText(this.character.abilityScores[i].toString());
+
+                form.getTextField(`${el}Mod`).setText(
+                    this.formatModifier(
+                        this.character.abilityModifiers[el]
+                    ));
+
+                form.getTextField(`${el}SaveMod`).setText(
+                    this.formatModifier(
+                        this.character.abilityModifiers[el]
+                    ));
+
             })
 
             // fill in base saving throw modifiers = same as base ability modifiers
-            this.options.abilityLabels.forEach(el => {
-                form.getTextField(`${el}SaveMod`).setText(
-                    this.formatModifier(
-                        this.character.abilityModifiers[options.abilityLabels.indexOf(el)]
-                    ));
-            })
+            // this.options.abilityLabels.forEach(el => {
+            //     form.getTextField(`${el}SaveMod`).setText(
+            //         this.formatModifier(
+            //             this.character.abilityModifiers[el]
+            //         ));
+            // })
 
             // update saving throws proficiencies (based on character class)
             let classObj = this.options.classList.find(el => el.name === this.character.characterClass);
@@ -202,7 +209,7 @@ export default {
             // fill in base skill modifiers = same as base ability modifiers
             this.options.skillList.forEach(el => {
                 form.getTextField(`${el.fieldName}Mod`).setText(
-                    this.formatModifier(this.character.abilityModifiers[options.abilityLabels.indexOf(el.ability)])
+                    this.formatModifier(this.character.abilityModifiers[el.ability])
                 );
             })
 
@@ -223,33 +230,47 @@ export default {
             let baseAc = 12;
             if (this.character.armor === "medium armor") baseAc += 2;
             if (this.character.armor === "heavy armor") baseAc += 4;
-            let ac = baseAc + this.character.abilityModifiers[1];
+            let ac = baseAc + this.character.abilityModifiers['dex'];
             form.getTextField('armorClass').setText(ac.toString());
 
             // set HP maximum = 10 + CON Modifier
-            let hp = 10 + Math.max(0, this.character.abilityModifiers[2]);
+            let hp = 10 + Math.max(0, this.character.abilityModifiers['con']);
             form.getTextField('hpMax').setText(hp.toString());
 
             // list the weapons
             let weapon1Obj = options.weaponList.find(el => el.name === this.character.weapon1);
             let weapon2Obj = options.weaponList.find(el => el.name === this.character.weapon2);
 
-            // melee weapon
-            let w1DamageMod = this.character.abilityModifiers[0];
-            // let w1AttackMod = w1DamageMod + 2;
+            // melee weapon, uses STR modifier
+            let w1Mod = this.character.abilityModifiers['str'];
             form.getTextField('weapon1').setText(weapon1Obj.name);
-            form.getTextField('weapon1AttackMod').setText(this.formatModifier(w1DamageMod + 2));
-            form.getTextField('weapon1Damage').setText(`${weapon1Obj.damageDice}+${w1DamageMod}`);
+            form.getTextField('weapon1AttackMod').setText(this.formatModifier(w1Mod + 2));
+            let w1DmgMod = w1Mod > 0 ? this.formatModifier(w1Mod) : '';
+            form.getTextField('weapon1Damage').setText(`${weapon1Obj.damageDice}${w1DmgMod}`);
 
-            // ranged weapon
-            let w2DamageMod = this.character.abilityModifiers[1];
-            // let w2AttackMod = w2DamageMod + 2;
+            // ranged weapon, uses DEX modifier
+            let w2Mod = this.character.abilityModifiers['dex'];
             form.getTextField('weapon2').setText(weapon2Obj.name);
-            form.getTextField('weapon2AttackMod').setText(this.formatModifier(w2DamageMod + 2));
-            form.getTextField('weapon2Damage').setText(`${weapon2Obj.damageDice}+${w2DamageMod}`);
+            form.getTextField('weapon2AttackMod').setText(this.formatModifier(w2Mod + 2));
+            let w2DmgMod = w2Mod > 0 ? this.formatModifier(w2Mod) : '';
+            form.getTextField('weapon2Damage').setText(`${weapon2Obj.damageDice}${w2DmgMod}`);
 
             // list adventuring gear
             form.getTextField('equipmentList').setText(this.character.gear.join('\n'));
+        },
+        fillSpellPage(form) {
+            // clerics and druids use WIS modifier
+            let spellAbility = 'wis';
+            // wizards use INT modifier
+            if (this.character.characterClass === 'wizard')
+                spellAbility = 'int';
+
+            let spellMod = this.character.abilityModifiers[spellAbility];
+
+            form.getTextField('spellAttackMod').setText(this.formatModifier(spellMod + 2));
+
+            let saveDiff = +spellMod + 10;
+            form.getTextField('spellSaveDifficulty').setText(saveDiff.toString());
         }
     }
 }
